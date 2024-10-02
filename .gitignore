@@ -1,0 +1,3 @@
+*.sql
+node_modules
+.yarn
