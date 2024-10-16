@@ -1,0 +1,108 @@
+/* Home.module.css */
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  /* Mengisi sisa ruang selain sidebar */
+  padding: 20px;
+  margin-left: 12%;
+  width: 90%;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Grid produk */
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* Menyesuaikan dengan 4 kolom */
+  gap: 15px;
+  /* Mengurangi jarak antar card */
+}
+
+.productCard {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  display: flex;
+  /* Aktifkan flexbox */
+  flex-direction: column;
+  /* Atur agar konten tersusun secara vertikal */
+  justify-content: center;
+}
+
+.productImage {
+  width: 200px;
+  /* Set lebar fix */
+  height: 150px;
+  /* Set tinggi fix */
+  object-fit: cover;
+  margin: 0 auto;
+  /* Agar gambar tetap proporsional dan memenuhi area */
+  margin-bottom: 10px;
+  border-radius: 5px;
+ 
+}
+
+.productCard h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  margin: 0 auto;
+}
+
+.productCard p {
+  color: #555;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+/* Style untuk container tombol */
+.buttonContainer {
+  display: flex;
+  justify-content: space-between; /* Membagi tombol menjadi dua kolom */
+  margin-top: 10px; /* Tambahkan sedikit jarak di atas tombol */
+}
+
+/* Gaya untuk tombol Add to Cart */
+.addToCartButton {
+  background-color: #4CAF50; /* Warna hijau untuk Add to Cart */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  flex: 1; /* Membuat tombol memenuhi kolom yang ada */
+  margin-right: 10px; /* Jarak antara tombol Add to Cart dan Buy */
+  transition: background-color 0.3s ease;
+}
+
+.addToCartButton:hover {
+  background-color: #45a049; /* Warna saat dihover */
+}
+
+/* Gaya untuk tombol Buy */
+.BuyButton {
+  background-color: #f44336; /* Warna merah untuk Buy */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  flex: 1; /* Membuat tombol memenuhi kolom yang ada */
+  transition: background-color 0.3s ease;
+}
+
+.BuyButton:hover {
+  background-color: #e53935; /* Warna saat dihover */
+}

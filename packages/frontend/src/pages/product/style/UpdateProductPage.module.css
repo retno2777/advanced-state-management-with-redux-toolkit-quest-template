@@ -1,0 +1,91 @@
+/* Style untuk kontainer luar */
+.outerContainer {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+  }
+  
+  /* Style untuk kontainer utama */
+  .container {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Style untuk judul halaman */
+  h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Style form */
+  .form {
+    width: 100%;
+    max-width: 600px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style grup form */
+  .formGroup {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Style label form */
+  label {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  
+  /* Style input text */
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Style untuk input file */
+  input[type="file"] {
+    padding: 5px;
+    border: none;
+  }
+  
+  /* Style tombol submit */
+  .submitButton {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .submitButton:disabled {
+    background-color: #c3e6cb;
+    cursor: not-allowed;
+  }
+  
+  /* Style untuk pesan error */
+  .errorMessage {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+  }
+  

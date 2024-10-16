@@ -1,0 +1,136 @@
+/* Home.module.css */
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #2b89f5;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.heroContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroContent h1 {
+  font-size: 3rem;
+  color: #fff;
+}
+
+.heroContent p {
+  font-size: 1.5rem;
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.heroButton {
+  background-color: #f0a500;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.heroButton:hover {
+  background-color: #333;
+}
+
+/* Styling untuk kontainer gambar produk di hero section */
+.heroProducts {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.heroProductItem {
+  text-align: center;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  max-width: 180px;
+}
+
+.heroProductItem:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.heroProductImage {
+  width: 100%;
+  height: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.heroProductItem p {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Features Section */
+.features {
+  padding: 2rem;
+  text-align: center;
+  background-color: #f1ecec;
+}
+
+.features h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  transition: transform 0.5s ease;
+}
+
+.features h2:hover {
+  transform: translateX(-10px);
+}
+
+.featureItems {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.feature {
+  flex: 1;
+  margin: 1rem;
+  padding: 2rem;
+  background-color: #486686;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: all 0.4s ease;
+}
+
+.feature:hover {
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-10px);
+  background-color: #2b89f5;
+}
+
+.feature h3 {
+  margin-bottom: 1rem;
+  color: #f8f5f5;
+  font-weight: bold;
+}
+
+.feature p {
+  color: #f1ecec;
+}

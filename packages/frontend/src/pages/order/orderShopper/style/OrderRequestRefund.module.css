@@ -1,0 +1,95 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f1f3f5;
+}
+
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    margin-left: 12%;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Mengatur grid menjadi 5 kolom */
+.orderList {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 kolom */
+    gap: 20px;
+}
+
+/* Gaya untuk setiap kartu pesanan */
+.orderCard {
+    display: flex;
+    flex-direction: column; /* Menampilkan konten secara vertikal */
+    background-color: #fff;
+    border: 1px solid #e3e6e8;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Teks rata kiri */
+}
+
+/* Wrapper untuk gambar produk */
+.imageWrapper {
+    text-align: center; /* Gambar berada di tengah */
+    margin-bottom: 15px; /* Jarak antara gambar dan detail */
+}
+
+/* Gambar produk */
+.productImage {
+    width: 100px; /* Ukuran gambar diperbesar */
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* Gaya untuk detail pesanan */
+.orderDetails {
+    flex: 1;
+    text-align: left; /* Teks rata kiri */
+}
+
+.orderDetails h2 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.orderDetails p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+/* Responsif: Menurunkan jumlah kolom sesuai lebar layar */
+@media (max-width: 1200px) {
+    .orderList {
+        grid-template-columns: repeat(4, 1fr); /* 4 kolom untuk layar sedang */
+    }
+}
+
+@media (max-width: 900px) {
+    .orderList {
+        grid-template-columns: repeat(3, 1fr); /* 3 kolom untuk layar lebih kecil */
+    }
+}
+
+@media (max-width: 600px) {
+    .orderList {
+        grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk layar lebih kecil */
+    }
+}
+
+@media (max-width: 400px) {
+    .orderList {
+        grid-template-columns: 1fr; /* 1 kolom untuk layar sangat kecil */
+    }
+}

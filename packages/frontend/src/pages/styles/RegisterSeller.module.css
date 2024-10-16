@@ -1,0 +1,123 @@
+/* Importing Google Fonts - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.outerContainer {
+    min-height: 100vh;
+    width: 100%;
+}
+
+.container {
+    max-width: 40%;
+    /* Lebar container diperbesar agar dua kolom bisa muat */
+    width: 100%;
+    background-color: #fff;
+    padding: 30px 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+    margin: 0 auto;
+    margin-top: 8rem;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+    /* Warna teks gelap */
+}
+
+.switchForm {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.switchForm .link {
+    color: #6a1b9a;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.switchForm .link:hover {
+    text-decoration: underline;
+}
+
+.userDetails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    /* Memberikan jarak antar elemen */
+}
+
+.inputBox {
+    flex: 1;
+    width: 100%;
+    min-width: 48%;
+    /* Membuat input lebih proporsional */
+    margin: 0.2rem;
+}
+
+.details {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #4f4f4f;
+}
+
+.inputBox input {
+    width: 90%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    outline: none;
+    font-size: 15px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.inputBox input[type="text"] {
+    width: 90%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    outline: none;
+    font-size: 15px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.inputBox input:focus {
+    border-color: #6a1b9a;
+    background-color: #fff;
+}
+
+.button {
+    margin-top: 25px;
+}
+
+.button input {
+    height: 50px;
+    width: 100%;
+    border-radius: 6px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #3d3743, #211e22);
+}
+
+.button input:hover {
+    background: linear-gradient(135deg, #2a2a2e, #19191d);
+}
+
+.errorMessage {
+    color: #e74c3c;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+}

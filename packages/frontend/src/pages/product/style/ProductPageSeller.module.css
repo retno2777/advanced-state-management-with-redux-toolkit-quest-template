@@ -1,0 +1,123 @@
+/* ProductPageSeller.module.css */
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  background-color: #f8f9fa;
+  margin-left: 12%;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.createButton {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.createButton:hover {
+  background-color: #45a049;
+}
+
+.productList {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* Menyesuaikan dengan 4 kolom */
+  gap: 15px;
+  /* Mengurangi jarak antar card */
+}
+
+.productCard {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  margin: 0 auto;
+  display: flex; /* Aktifkan flexbox */
+  flex-direction: column; /* Atur agar konten tersusun secara vertikal */
+  justify-content: center; /* Pusatkan konten secara vertikal */
+  align-items: center; /* Pusatkan konten secara horizontal */ /* Jika perlu agar teks juga ditengah */
+}
+.productCard:hover {
+  transform: translateY(-5px);
+}
+
+.productCard h3 {
+  font-size: 1.2rem;
+  /* Mengurangi ukuran font */
+  color: #333;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.productCard p {
+  font-size: 0.9rem;
+  /* Mengurangi ukuran font */
+  color: #555;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.productImage {
+  width: 200px;
+  /* Set lebar fix */
+  height: 150px;
+  /* Set tinggi fix */
+  object-fit: cover;
+  /* Agar gambar tetap proporsional dan memenuhi area */
+  margin-bottom: 10px;
+  border-radius: 5px;
+ 
+}
+
+
+.productActions {
+  margin-top: 10px;
+  /* Mengurangi jarak antara deskripsi dan tombol */
+}
+
+.updateButton {
+  padding: 6px 12px;
+  /* Mengurangi padding tombol */
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-right: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.updateButton:hover {
+  background-color: #0056b3;
+}
+
+.deleteButton {
+  padding: 6px 12px;
+  /* Mengurangi padding tombol */
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+  background-color: #c0392b;
+}

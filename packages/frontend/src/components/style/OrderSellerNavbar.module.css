@@ -1,0 +1,38 @@
+/* OrderSellerNavbar.module.css */
+.navbar {
+    background-color: #242222; /* Background untuk navbar */
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navLinks {
+    list-style-type: none; /* Hapus bullet points dari list */
+    display: flex;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .navLinks li {
+    margin: 0 10px;
+  }
+  
+  .navLinks a {
+    text-decoration: none; /* Hapus underline dari link */
+    color: #fff; /* Warna teks */
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease; /* Animasi untuk hover */
+  }
+  
+  .navLinks a:hover {
+    background-color: #4c4c4c; /* Warna background saat di-hover */
+  }
+  
+  .navLinks a.active {
+    background-color: #00b894; /* Warna untuk link aktif */
+    color: #fff; /* Warna teks untuk link aktif */
+  }
+  

@@ -1,0 +1,186 @@
+/* Container utama untuk halaman */
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f1f3f5;
+  }
+  
+  /* Konten utama di sebelah sidebar */
+  .mainContent {
+    flex: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    margin-left: 12%;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .orderList {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Membagi grid menjadi 5 kolom */
+    gap: 20px;
+}
+  
+  /* Gaya untuk setiap kartu pesanan */
+  .orderCard {
+    display: flex;
+    background-color: #fff;
+    border: 1px solid #e3e6e8;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-direction: column; /* Mengatur agar gambar, detail, dan tombol berurutan secara vertikal */
+  }
+  
+  /* Wrapper untuk gambar produk */
+  .imageWrapper {
+    flex-shrink: 0;
+    margin-bottom: 15px; /* Jarak antara gambar dan detail */
+    text-align: center;
+  }
+  
+  /* Gambar produk */
+  .productImage {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  /* Gaya untuk detail pesanan */
+  .orderDetails {
+    flex: 1;
+    margin-bottom: 15px; /* Jarak antara detail dan tombol */
+  }
+  
+  .orderDetails h2 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .orderDetails p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  /* Gaya untuk grup tombol */
+  .buttonGroup {
+    display: flex;
+    justify-content: flex-end; /* Mengatur tombol berada di kanan bawah */
+    gap: 10px;
+  }
+  
+  /* Tombol untuk membatalkan pesanan */
+  .cancelButton {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cancelButton:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Modal Overlay */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Konten Modal */
+  .modalContent {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* Gaya tombol Yes dan No di dalam modal */
+  .actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .yesButton,
+  .noButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .yesButton {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .noButton {
+    background-color: #ff4d4f;
+    color: white;
+  }
+  
+  .yesButton:hover {
+    background-color: #0056b3;
+  }
+  
+  .noButton:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Modal untuk notifikasi */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modalContent {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .closeButton {
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .closeButton:hover {
+    background-color: #0056b3;
+  }
+  

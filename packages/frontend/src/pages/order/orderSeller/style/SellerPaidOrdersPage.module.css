@@ -1,0 +1,109 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    margin-left: 12%;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.orderList {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Maksimal 5 kolom */
+    gap: 20px;
+}
+
+.orderCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #e3e6e8;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.imageWrapper {
+    margin-bottom: 15px;
+}
+
+.productImage {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.orderDetails {
+    flex: 1;
+    text-align: left;
+    width: 100%;
+}
+
+.orderDetails h2 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.orderDetails p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+/* Gaya untuk tombol update pengiriman */
+.updateShippingButton {
+    background-color: #4CAF50;
+    width: 90%;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.updateShippingButton:hover {
+    background-color: #45a049;
+}
+
+.updateShippingButton:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}
+
+/* Gaya untuk tombol mark as delivered */
+.updateDeliverButton {
+    background-color: #007bff;
+    width: 90%;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.updateDeliverButton:hover {
+    background-color: #0056b3;
+}
+
+.updateDeliverButton:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}

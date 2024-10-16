@@ -2,7 +2,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/authenticationRoutes.js";
 import morgan from "morgan";
-import accessControlRoutes from "./routes/authorisationRoutes.js";
+import shopperRoute from "./routes/authorization/shopperRoutes.js"; // Rute shopper
+import sellerRoute from "./routes/authorization/sellerRoutes.js"; // Rute seller
+import adminRoute from "./routes/authorization/adminRoutes.js"; // Rute seller
 import dotenv from "dotenv";
 dotenv.config();
 const config = process.env;
@@ -58,8 +60,11 @@ app.use(express.json());
 // Set Cors Options before other routes for all possible routes, enabling preflight across the board
 app.options("*", cors(corsOptions));
 
-app.use("/api/auth/", authRoute);
-app.use("/api/posts/", accessControlRoutes);
+app.use("/api/auth/", authRoute);  // Route for authentication
+app.use("/api/seller/", sellerRoute);  // Route for seller functionality
+app.use("/api/shopper/", shopperRoute);  // Route for shopper functionality
+app.use("/api/admin/", adminRoute);  // Route for admin functionality
+
 
 try {
 	app.listen(PORT, () =>

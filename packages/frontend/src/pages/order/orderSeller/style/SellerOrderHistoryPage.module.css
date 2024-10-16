@@ -1,0 +1,63 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f1f3f5;
+}
+
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    margin-left: 12%;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.orderList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.orderCard {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #e3e6e8;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.imageWrapper {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.productImage {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.orderDetails {
+    text-align: left;
+}
+
+.orderDetails h2 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.orderDetails p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+

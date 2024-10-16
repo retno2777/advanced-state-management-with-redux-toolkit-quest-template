@@ -1,0 +1,96 @@
+/* Container utama untuk halaman */
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f1f3f5;
+}
+
+/* Konten utama di sebelah sidebar */
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  margin-left: 12%;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Daftar pesanan */
+.orderList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Membagi grid menjadi kolom dinamis */
+  gap: 20px;
+}
+
+/* Gaya untuk setiap kartu pesanan */
+.orderCard {
+  display: flex;
+  flex-direction: column; /* Mengatur isi kartu agar tersusun vertikal */
+  background-color: #fff;
+  border: 1px solid #e3e6e8;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left; /* Teks mentok kiri */
+}
+
+/* Wrapper untuk gambar produk */
+.imageWrapper {
+  margin-bottom: 15px; /* Jarak antara gambar dan detail */
+  text-align: center; /* Gambar berada di tengah */
+}
+
+/* Gambar produk */
+.productImage {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Gaya untuk detail pesanan */
+.orderDetails {
+  flex: 1;
+  text-align: left; /* Teks mentok kiri */
+}
+
+.orderDetails h2 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.orderDetails p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+/* Gaya untuk grup tombol */
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: auto; /* Membuat tombol berada di bagian paling bawah */
+  gap: 10px; /* Jarak antar tombol */
+}
+
+/* Tombol untuk mengonfirmasi pesanan */
+.confirmButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirmButton:hover {
+  background-color: #218838;
+}

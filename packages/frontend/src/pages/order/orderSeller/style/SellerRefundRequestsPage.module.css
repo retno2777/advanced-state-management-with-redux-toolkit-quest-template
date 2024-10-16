@@ -1,0 +1,77 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    margin-left: 12%;
+}
+
+.orderList {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Mengatur 5 kolom grid */
+    gap: 20px;
+}
+
+.orderCard {
+    display: flex;
+    flex-direction: column; /* Konten vertikal */
+    background-color: #fff;
+    border: 1px solid #e3e6e8;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.imageWrapper {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.productImage {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.orderDetails {
+    flex: 1;
+    text-align: left; /* Konten teks rata kiri */
+    margin-bottom: auto; /* Memastikan tombol ada di bawah */
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto; /* Menyebabkan tombol berada di bagian bawah kartu */
+}
+
+.approveButton {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.rejectButton {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.notification {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+}
