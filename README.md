@@ -33,24 +33,24 @@ This project is a backend API designed for a **Pharmaceutical E-Commerce platfor
     - Only active sellers can create, update, or delete products and manage orders.
     - Profile deletion is restricted if the seller has active transactions.
 - **Shopper Functionalities**:
-    - **Profile Management**:
+    -**Profile Management**:
         - Load, update, and delete shopper profiles.
         - Upload and manage profile images.
         - Change passwords and email addresses.
         - Profile deletion is restricted if there are active transactions.
-    - **Cart Management**:
+    -**Cart Management**:
         - View items in the cart.
         - Add items to the cart.
         - Reduce item quantity or remove items from the cart.
 
-    - **Order Management**:
+    -**Order Management**:
         - Checkout selected items from the cart.
         - View order items and order history.
         - Request order cancellation or refund.
-    - **Payment Simulation**:
+    -**Payment Simulation**:
         - Simulate payments for orders.
         - Confirm receipt of orders after   delivery.
-    - **Product Viewing**:
+    -**Product Viewing**:
         - View all available products.
 
 - **State Management (Frontend)**:
@@ -59,7 +59,7 @@ This project is a backend API designed for a **Pharmaceutical E-Commerce platfor
     - Handles async operations, like API calls for registration and login, using createAsyncThunk for better state handling.
 
 - **CORS Support**:
-  - Configured for specific frontend origins, supporting credentials.
+    - Configured for specific frontend origins, supporting credentials.
 
 
 
@@ -100,8 +100,8 @@ This project is a backend API designed for a **Pharmaceutical E-Commerce platfor
    - **Protected Route:** Yes (Admin Access Required)
 
 ### 2. Seller Root Route
-- **Base URL:** `/api/seller`
-- **Description:** This route is used to handle seller functionalities like managing profiles, products, and orders.
+  - **Base URL:** `/api/seller`
+  - **Description:** This route is used to handle seller functionalities like managing profiles, products, and orders.
 
 #### Example Endpoints:
 1. **Create a Product**
@@ -120,14 +120,14 @@ This project is a backend API designed for a **Pharmaceutical E-Commerce platfor
      ```
 
 2. **View Seller Orders**
-   - **Method:** `GET`
-   - **URL:** `/api/seller/orders`
-   - **Description:** Retrieves all orders placed with the seller.
-   - **Protected Route:** Yes (Seller Access Required)
+  - **Method:** `GET`
+  - **URL:** `/api/seller/orders`
+  - **Description:** Retrieves all orders placed with the seller.
+  - **Protected Route:** Yes (Seller Access Required)
 
 ### 3. Shopper Root Route
-- **Base URL:** `/api/shopper`
-- **Description:** This route is used to handle shopper functionalities like managing profiles, shopping carts, and orders.
+  - **Base URL:** `/api/shopper`
+  - **Description:** This route is used to handle shopper functionalities like managing profiles, shopping carts, and orders.
 
 #### Example Endpoints:
 1. **View Cart**
@@ -151,75 +151,75 @@ This project is a backend API designed for a **Pharmaceutical E-Commerce platfor
 
 ## Getting Started
 
-To get a local copy up and running, follow these simple steps.
+  To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 - Ensure you have **Node.js** and **npm/yarn** installed.
-- Additional may you have **DB Browser for SQLite** or **SQLite CLI** to read database.
+- Additional you may have **DB Browser for SQLite** or **SQLite CLI** to read database.
 
 ## Installation
 
-Follow these steps to set up the project locally:
+  Follow these steps to set up the project locally:
 
 1. **Clone the repository:**
 
-   Clone the repository to your local machine using the following command:
-   ```bash
-   git clone https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template.git 
-   ```
+  Clone the repository to your local machine using the following command:
+  ```bash
+  git clone https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template.git 
+  ```
 
 2. Navigate to the project directory:    
-```bash 
-cd advanced-state-management-with-redux-toolkit-quest-template 
-```
+  ```bash 
+  cd advanced-state-management-with-redux-toolkit-quest-template 
+  ```
 3. Install dependencies :
-```bash
-corepack enable
-yarn set version stable
-yarn install
-```
+  ```bash
+  corepack enable
+  yarn set version stable
+  yarn install
+  ```
 4. Environment Variables
 
-Create `.env` file in the ``packages\backend`` directory with the following variables:
+  Create `.env` file in the ``packages\backend`` directory with the following variables:
 
-```bash
-TOKEN=your_jwt_secret_key
-```
+  ```bash
+  TOKEN=your_jwt_secret_key
+  ```
 
-after that running this command in ``packages\backend``
-```bash
-cp .env.example .env
-```
+  after that running this command in ``packages\backend``
+  ```bash
+  cp .env.example .env
+  ```
 5. Run the backend server
-```bash
-yarn backend:serve
-```
+  ```bash
+  yarn backend:serve
+  ```
 6. Run the frontend client
-```bash
-yarn frontend:dev
-```
+  ```bash
+  yarn frontend:dev
+  ```
 7. Access the Application Open your browser and navigate to 
-```bash
-http://localhost:5173 
-```
+  ```bash
+  http://localhost:5173 
+  ```
 ## Dummy Data for Testing
 
-You can use the following dummy user credentials for testing the authentication and functionality of the platform:
+  You can use the following dummy user credentials for testing the authentication and functionality of the platform:
 
-| Email                | Password   |
-|----------------------|------------|
-| rm@gmail.com         | 12345      |
-| rm2@gmail.com        | 12345      |
-| john@gmail.com       | 12345      |
-| don@gmail.com        | 12345      |
-| admin1@example.com   | Admin123!  |
+  | Email                | Password   |
+  |----------------------|------------|
+  | rm@gmail.com         | 12345      |
+  | rm2@gmail.com        | 12345      |
+  | john@gmail.com       | 12345      |
+  | don@gmail.com        | 12345      |
+  | admin1@example.com   | Admin123!  |
 
-Use these accounts to test different roles and actions in the platform.
+  Use these accounts to test different roles and actions in the platform.
 
 ## Conclusion
 
-The **Pharma E-Commerce Backend API** offers a robust solution for managing an online pharmaceutical store. With role-based access control for **Sellers**, **Shoppers**, and **Admins**, it provides a secure and efficient way to handle various operations such as product management, order handling, and user authentication. Integrated with **Redux** for frontend state management, it ensures smooth interactions between the backend API and the user interface. 
+  The **Pharma E-Commerce Backend API** offers a robust solution for managing an online pharmaceutical store. With role-based access control for **Sellers**, **Shoppers**, and **Admins**, it provides a secure and efficient way to handle various operations such as product management, order handling, and user authentication. Integrated with **Redux** for frontend state management, it ensures smooth interactions between the backend API and the user interface. 
 
-This project is scalable and can easily be extended to support more features as the business grows. It's a solid foundation for anyone looking to build a full-stack e-commerce platform.
+  This project is scalable and can easily be extended to support more features as the business grows. It's a solid foundation for anyone looking to build a full-stack e-commerce platform.
 
-We hope you find it useful and encourage contributions to further improve and expand its capabilities! 🚀
+  We hope you find it useful and encourage contributions to further improve and expand its capabilities! 🚀
