@@ -71,14 +71,17 @@ This project is a backend API designed for a **Pharmaceutical E-Commerce platfor
 - **SQlite** or any preferred database (depending on further implementation).
 
 ## Demo picture
-- Home
-![Home](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Home.png)
-- Admin
-![Admin](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Admin.png)
-- Shopper
-![Shopper](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Shopper.png)
-- Seller
-![Seller](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Seller.png)
+  - Home
+    ![Home](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Home.png)
+  - Admin
+    ![Admin](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Admin.png)
+  - Shopper
+    ![Shopper](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Shopper.png)
+  - Seller
+    ![Seller](https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template/blob/main/assetReadme/Seller.png)
+
+## Demo Video
+  [Watch the video here](https://drive.google.com/file/d/1o_vAwOK5ebIc-7cLFhMAxoyDyhPRk1t2/view?usp=drive_link)
 
 ## Root API Endpoints
 
@@ -105,11 +108,11 @@ This project is a backend API designed for a **Pharmaceutical E-Commerce platfor
 
 #### Example Endpoints:
 1. **Create a Product**
-   - **Method:** `POST`
-   - **URL:** `/api/seller/products`
-   - **Description:** Allows sellers to create a new product.
-   - **Protected Route:** Yes (Seller Access Required)
-   - **Payload Example:**
+  - **Method:** `POST`
+  - **URL:** `/api/seller/products`
+  - **Description:** Allows sellers to create a new product.
+  - **Protected Route:** Yes (Seller Access Required)
+  - **Payload Example:**
      ```json
      {
        "productName": "Sample Product",
