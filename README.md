@@ -165,7 +165,8 @@ Follow these steps to set up the project locally:
 
    Clone the repository to your local machine using the following command:
    ```bash
-   git clone https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template.git ```
+   git clone https://github.com/retno2777/advanced-state-management-with-redux-toolkit-quest-template.git 
+   ```
 
 2. Navigate to the project directory:    
 ```bash 
