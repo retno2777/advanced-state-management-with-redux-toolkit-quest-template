@@ -1,7 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../services/api'; // Sesuaikan path ke layanan API
-import { OrderItem, OrderHistoryItem, OrderState } from './type'; // Import tipe
+import api from '../../../services/api';
+import { OrderItem, OrderHistoryItem, OrderState } from './type';
 
+/**
+ * Initial state for order slice
+ */
 const initialState: OrderState = {
   orderItems: [],
   orderHistory: [],
@@ -9,7 +12,14 @@ const initialState: OrderState = {
   error: null,
 };
 
-// Fetch order items
+/**
+ * Fetch order items
+ *
+ * This async thunk is used to fetch order items from the API. It will handle the request
+ * and response for the fetch order items action.
+ *
+ * @returns The list of order items.
+ */
 export const fetchOrderItems = createAsyncThunk<OrderItem[], void, { rejectValue: string }>(
   'order/fetchOrderItems',
   async (_, { rejectWithValue }) => {
@@ -29,7 +39,14 @@ export const fetchOrderItems = createAsyncThunk<OrderItem[], void, { rejectValue
   }
 );
 
-// Fetch order history
+/**
+ * Fetch order history
+ *
+ * This async thunk is used to fetch order history from the API. It will handle the request
+ * and response for the fetch order history action.
+ *
+ * @returns The list of order history items.
+ */
 export const fetchOrderHistory = createAsyncThunk<OrderHistoryItem[], void, { rejectValue: string }>(
   'order/fetchOrderHistory',
   async (_, { rejectWithValue }) => {
@@ -46,7 +63,15 @@ export const fetchOrderHistory = createAsyncThunk<OrderHistoryItem[], void, { re
   }
 );
 
-// Simulate payment
+/**
+ * Simulate payment for an order
+ *
+ * This async thunk is used to simulate payment for an order from the API. It will handle the request
+ * and response for the simulate payment action.
+ *
+ * @param {{orderId: number}} data - The data for the simulate payment. It should contain the orderId.
+ * @returns {void}
+ */
 export const simulatePayment = createAsyncThunk<void, { orderId: number }, { rejectValue: string }>(
   'order/simulatePayment',
   async ({ orderId }, { rejectWithValue }) => {
@@ -60,7 +85,15 @@ export const simulatePayment = createAsyncThunk<void, { orderId: number }, { rej
   }
 );
 
-// Request cancellation or refund
+/**
+ * Request cancellation or refund for an order
+ *
+ * This async thunk is used to request cancellation or refund for an order from the API. It will handle the request
+ * and response for the request cancellation or refund action.
+ *
+ * @param {{orderId: number}} data - The data for the request cancellation or refund. It should contain the orderId.
+ * @returns {void}
+ */
 export const requestCancellationOrRefund = createAsyncThunk<
   void,
   { orderId: number },
@@ -77,7 +110,16 @@ export const requestCancellationOrRefund = createAsyncThunk<
     }
   }
 );
-// Confirm order receipt
+
+/**
+ * Confirm order receipt
+ *
+ * This async thunk is used to confirm order receipt from the API. It will handle the request
+ * and response for the confirm order receipt action.
+ *
+ * @param {{orderId: number}} data - The data for the confirm order receipt. It should contain the orderId.
+ * @returns {void}
+ */
 export const confirmOrderReceipt = createAsyncThunk<void, { orderId: number }, { rejectValue: string }>(
   'order/confirmOrderReceipt',
   async ({ orderId }, { rejectWithValue }) => {
@@ -127,7 +169,6 @@ const orderSlice = createSlice({
       .addCase(fetchOrderHistory.fulfilled, (state, action) => {
         state.loading = false;
         state.orderHistory = action.payload;
-        console.log(state.orderHistory);
       })
       .addCase(fetchOrderHistory.rejected, (state, action) => {
         state.loading = false;
@@ -145,7 +186,7 @@ const orderSlice = createSlice({
         const orderId = action.meta.arg.orderId;
         const orderItem = state.orderItems.find(item => item.id === orderId);
         if (orderItem) {
-          orderItem.paymentStatus = 'Paid';  // Perbarui status pembayaran
+          orderItem.paymentStatus = 'Paid'; 
         }
       })
       .addCase(simulatePayment.rejected, (state, action) => {
@@ -164,7 +205,7 @@ const orderSlice = createSlice({
         const orderId = action.meta.arg.orderId;
         const orderItem = state.orderItems.find(item => item.id === orderId);
         if (orderItem) {
-          orderItem.shippingStatus = 'Refund Requested';  // Perbarui status pengiriman
+          orderItem.shippingStatus = 'Refund Requested';  
         }
       })
       .addCase(requestCancellationOrRefund.rejected, (state, action) => {
@@ -183,7 +224,7 @@ const orderSlice = createSlice({
         const orderId = action.meta.arg.orderId;
         const orderItem = state.orderItems.find(item => item.id === orderId);
         if (orderItem) {
-          orderItem.shippingStatus = 'Delivered';  // Perbarui status pengiriman
+          orderItem.shippingStatus = 'Delivered'; 
         }
       })
       .addCase(confirmOrderReceipt.rejected, (state, action) => {

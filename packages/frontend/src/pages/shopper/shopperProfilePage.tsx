@@ -10,28 +10,45 @@ import ConfirmationModal from '../../components/modal/modal_confirmation';
 import Modal from '../../components/modal/modal_notification';
 import styles from '../shopper/style/ShopperProfilePage.module.css';
 
+/**
+ * ShopperProfilePage
+ *
+ * This component renders the shopper's profile page.
+ * It fetches the shopper's profile data from the Redux state and
+ * renders it in a table.
+ *
+ * The component is accessible only if the user is logged in as a shopper.
+ * If the user is not logged in, they will be redirected to the login page.
+ *
+ * The component is responsive and will adapt to different screen sizes.
+ *
+ * @returns {JSX.Element} The component's JSX element.
+ */
 const ShopperProfilePage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // Get profile data from Redux state
+    // Get profile data and error from Redux state
     const { shopper, loading, error } = useSelector((state: RootState) => state.shopper);
 
     const [showModal, setShowModal] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
+    const [notificationTitle, setNotificationTitle] = useState('');
 
     // Load shopper profile when the component is first rendered
     useEffect(() => {
         dispatch(loadShopperProfile());
     }, [dispatch]);
 
-    // Function to delete profile
+    // Function to delete the shopper profile
     const handleDeleteConfirm = async () => {
-        setShowModal(false);
+        setShowModal(false); // Close confirmation modal
         try {
+            // Attempt to delete profile
             const result = await dispatch(deleteShopperProfile());
             if (deleteShopperProfile.fulfilled.match(result)) {
+                setNotificationTitle('Success');
                 setNotificationMessage('Profile deleted successfully!');
                 setShowNotification(true);
 
@@ -40,14 +57,16 @@ const ShopperProfilePage = () => {
                     dispatch(logout());
                     dispatch(resetProductState());
                     navigate('/');
-                }, 1000);
+                }, 2000);
             } else {
-                setNotificationMessage('Failed to delete profile. Please try again.');
+                setNotificationTitle('Error');
+                setNotificationMessage(result.payload as string || 'Failed to delete profile. Please try again.');
                 setShowNotification(true);
                 setTimeout(() => setShowNotification(false), 3000);
             }
-        } catch (error) {
-            setNotificationMessage('An error occurred while deleting the profile.');
+        } catch {
+            setNotificationTitle('Error');
+            setNotificationMessage('Failed to delete profile. Please try again.');
             setShowNotification(true);
             setTimeout(() => setShowNotification(false), 3000);
         }
@@ -61,10 +80,6 @@ const ShopperProfilePage = () => {
         return <p>Loading profile...</p>;
     }
 
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
-
     if (!shopper) {
         return <p>No profile data available.</p>;
     }
@@ -73,8 +88,7 @@ const ShopperProfilePage = () => {
         <div className={styles.container}>
             <SidebarShopper />
             <div className={styles.mainContent}>
-                <h1>Manage Your Profile</h1>
-
+                <h1 className={styles.title}>Your Profile</h1>
                 <div className={styles.profileCard}>
                     <div className={styles.cardHeader}>
                         {shopper.profilePicture ? (
@@ -136,6 +150,7 @@ const ShopperProfilePage = () => {
                     </Link>
                 </div>
 
+                {/* Confirmation Modal for profile deletion */}
                 <ConfirmationModal
                     show={showModal}
                     message="Are you sure you want to delete your profile?"
@@ -143,12 +158,19 @@ const ShopperProfilePage = () => {
                     onClose={handleCloseModal}
                 />
 
+                {/* Notification Modal for both success and error cases */}
                 {showNotification && (
-                    <Modal message={notificationMessage} show={showNotification} onClose={() => setShowNotification(false)} />
+                    <Modal
+                        title={notificationTitle}
+                        message={notificationMessage}
+                        show={showNotification}
+                        onClose={() => setShowNotification(false)}
+                    />
                 )}
             </div>
         </div>
     );
 };
+
 
 export default ShopperProfilePage;

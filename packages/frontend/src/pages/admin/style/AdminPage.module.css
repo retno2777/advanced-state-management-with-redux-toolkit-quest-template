@@ -1,123 +1,156 @@
-/* Container utama untuk halaman admin */
+/*
+ * AdminPage.module.css
+ * This is the CSS for the admin page.
+ * It contains the styles for the page, including the container, header, and columns.
+ */
 .container {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  min-height: 100vh;
+  gap: 20px;
+  width: 100%;
+  margin-top: 0.5rem;
 }
 
-/* Header yang menampilkan judul dan tombol logout */
 .header {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
 }
 
 .logoutButton {
-  background-color: #ff4d4d;
-  color: white;
-  padding: 10px 20px;
+  background-color: #ff5f5f;
   border: none;
-  border-radius: 5px;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
-  margin: 0 auto;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
 .logoutButton:hover {
-  background-color: #cc0000;
+  background-color: #ff3b3b;
 }
 
-/* Kolom untuk shoppers dan sellers */
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+
 .column {
   flex: 1;
-  margin: 0 10px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 45%;
 }
 
 .column h2 {
-  text-align: center;
-  color: #333;
+  font-size: 24px;
   margin-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+  color: #333;
 }
 
-/* Gaya untuk setiap kartu pengguna (shopper/seller) */
 .userCard {
-  background-color: white;
+  background-color: #f9f9f9;
+  padding: 15px;
+  margin-bottom: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.userCard:hover {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .userCard h3 {
-  margin: 0;
+  font-size: 18px;
+  margin-bottom: 10px;
   color: #333;
 }
 
 .userCard p {
   margin: 5px 0;
-  color: #555;
+  color: #666;
+  font-size: 14px;
 }
 
-/* Grup tombol di dalam kartu pengguna */
 .buttonGroup {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   margin-top: 10px;
 }
 
+.activateButton,
 .deactivateButton,
 .deleteButton {
-  padding: 8px 15px;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
   transition: background-color 0.3s ease;
 }
 
-/* Tombol untuk menonaktifkan pengguna */
+.activateButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.activateButton:hover {
+  background-color: #45a045;
+}
+
 .deactivateButton {
-  background-color: #ffcc00;
+  background-color: #fbc02d;
   color: white;
 }
 
 .deactivateButton:hover {
-  background-color: #e6b800;
+  background-color: #f3b200;
 }
 
-/* Tombol untuk menghapus pengguna */
 .deleteButton {
-  background-color: #ff4d4d;
+  background-color: #f44336;
   color: white;
 }
 
 .deleteButton:hover {
-  background-color: #cc0000;
+  background-color: #e53935;
 }
 
-/* Gaya untuk pesan error */
 .error {
   color: red;
   text-align: center;
-  margin-bottom: 15px;
+  margin: 10px 0;
+  font-size: 14px;
 }
 
-/* Gaya untuk pesan sukses */
 .success {
   color: green;
   text-align: center;
-  margin-bottom: 15px;
-}
-
-/* Responsif untuk kolom shopper dan seller */
-@media (min-width: 768px) {
-  .container {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .column {
-    width: 48%;
-  }
+  margin: 10px 0;
+  font-size: 14px;
 }

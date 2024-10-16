@@ -1,14 +1,17 @@
-
+/*
+ * OrderShopperNavbar.module.css
+ * This is the CSS for the Navbar that is used in the Order Shopper page.
+ * It contains the styles for the logo, navigation links, and the hover effect.
+ */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #2d3e50;
+  background-color: #000000;
   max-width: 100%;
 }
 
-/* Styling untuk daftar links */
 .navLinks {
   list-style-type: none;
   display: flex;
@@ -17,12 +20,10 @@
   padding: 0;
 }
 
-/* Styling untuk setiap link */
 .navLinks li {
   font-size: 1rem;
 }
 
-/* Styling untuk Link */
 .navLinks a {
   text-decoration: none;
   color: #fbfdff;
@@ -32,7 +33,6 @@
   border-radius: 5px;
 }
 
-/* Hover effect untuk Link */
 .navLinks a:hover {
   background-color: #1d66b4;
   color: white;

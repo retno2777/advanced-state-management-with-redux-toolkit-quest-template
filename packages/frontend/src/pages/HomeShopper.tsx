@@ -1,81 +1,101 @@
-// Import necessary hooks and actions from Redux and React
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductsByShopper } from '../features/product/productSlice';
-import { addItemToCart, checkoutSelectedItems } from '../features/cart/cartSlice'; // Import action untuk menambah produk ke keranjang dan checkout
+import { addItemToCart, checkoutSelectedItems } from '../features/cart/cartSlice';
 import { RootState } from '../app/store';
 import Sidebar from '../components/sidebar/sidebar_shopper';
-import ConfirmationModal from '../components/modal/modal_confirmation'; // Import modal konfirmasi
-import Modal from '../components/modal/modal_notification'; // Import modal notifikasi
+import ConfirmationModal from '../components/modal/modal_confirmation';
+import Modal from '../components/modal/modal_notification';
 import styles from '../pages/styles/HomeShopper.module.css';
 
+/**
+ * Home page for shoppers
+ *
+ * This page displays all products available
+ * from all sellers. The shopper can add products
+ * to their cart and checkout directly.
+ */
 const Home = () => {
   const dispatch = useDispatch();
 
-  // Ambil data produk dari state Redux
+  // Fetch product data from Redux state
   const { products, loading, error } = useSelector((state: RootState) => state.products);
 
-  // State untuk kontrol modal
+  // State for controlling modals
   const [showModal, setShowModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
-  // Panggil thunk untuk memuat produk ketika halaman pertama kali di-render
+  // Load products when the page first renders
   useEffect(() => {
     dispatch(getProductsByShopper());
   }, [dispatch]);
 
-  // Fungsi untuk menambah produk ke keranjang
+  /**
+   * Function to add product to cart
+   *
+   * @param {number} productId - ID of the product to add
+   */
   const handleAddToCart = (productId: number) => {
-    const quantity = 1; // Kita tambahkan 1 produk per klik
+    const quantity = 1; // Add 1 item per click
     dispatch(addItemToCart({ productId, quantity }));
+    setNotificationMessage('Product added to cart!');
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 1000); // Show notification for 1 second
   };
 
-  // Fungsi untuk meng-handle pembelian (checkout langsung)
-  const handleBuy = (productId: number, quantity: number = 1) => {
-    setSelectedProductId(productId); // Simpan produk yang dipilih untuk checkout
-    console.log(`Selected product ID: ${productId}, quantity: ${quantity}`);
-    setShowModal(true); // Tampilkan modal konfirmasi
+  /**
+   * Handle buying a product directly (checkout)
+   *
+   * @param {number} productId - ID of the product to checkout
+   */
+  const handleBuy = (productId: number) => {
+    setSelectedProductId(productId);
+    setShowModal(true);
   };
 
-  // Fungsi untuk memproses checkout setelah konfirmasi
+  /**
+   * Process checkout after confirmation
+   */
   const handleCheckout = async () => {
     if (selectedProductId !== null) {
       const result = await dispatch(
         checkoutSelectedItems({
-          productIds: [], // Kosong karena ini bukan dari keranjang
+          productIds: [],
           singleProductId: selectedProductId,
-          singleProductQuantity: 1, // Jumlah default saat checkout langsung
+          singleProductQuantity: 1,
         })
       );
 
+      // Handle success or failure of checkout
       if (checkoutSelectedItems.fulfilled.match(result)) {
         setNotificationMessage('Checkout successful!');
       } else {
-        setNotificationMessage('Checkout failed. Please try again.');
+        const errorMsg = result.payload as string || 'Checkout failed. Please try again.';
+        setNotificationMessage(errorMsg);
       }
 
       setShowNotification(true);
-      setTimeout(() => setShowNotification(false), 2000); // Tampilkan notifikasi selama 2 detik
+      setTimeout(() => setShowNotification(false), 2000);
     }
 
-    setShowModal(false); // Sembunyikan modal konfirmasi setelah proses
+    setShowModal(false);
   };
 
   return (
     <div className={styles.container}>
-      <Sidebar /> {/* Sidebar tetap di samping kiri */}
+      <Sidebar /> {/* Sidebar stays on the left */}
       <div className={styles.mainContent}>
         <h1>Products</h1>
 
-        {/* Tampilkan pesan loading jika data sedang dimuat */}
+        {/* Show loading message if data is being fetched */}
         {loading && <p>Loading products...</p>}
 
-        {/* Tampilkan pesan error jika terjadi kesalahan */}
-        {error && <p>Error: {error}</p>}
+        {/* Show error message if any error occurs */}
+        {error && <p className={styles.errorMessage}>{error}</p>}
 
-        {/* Jika produk sudah tersedia, tampilkan di grid */}
+        {/* Display products in a grid layout */}
         <div className={styles.productsGrid}>
           {products.map((product) => (
             <div key={product.id} className={styles.productCard}>
@@ -85,11 +105,28 @@ const Home = () => {
                 className={styles.productImage}
               />
               <h2>{product.productName}</h2>
-              <p>${product.price}</p>
-              <p>Stock: {product.stock}</p>
-              <p>{product.description}</p>
+              {/* Table for displaying product details */}
+              <table className={styles.productTable}>
+                <tbody>
+                  <tr>
+                    <td><strong>Price</strong></td>
+                    <td>:</td>
+                    <td>${product.price}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Stock</strong></td>
+                    <td>:</td>
+                    <td>{product.stock}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Description</strong></td>
+                    <td>:</td>
+                    <td>{product.description}</td>
+                  </tr>
+                </tbody>
+              </table>
+              {/* Buttons always stay at the bottom */}
               <div className={styles.buttonContainer}>
-                {/* Tambahkan event handler untuk Add to Cart */}
                 <button
                   className={styles.addToCartButton}
                   onClick={() => handleAddToCart(product.id)}
@@ -97,8 +134,8 @@ const Home = () => {
                   Add to Cart
                 </button>
                 <button
-                  className={styles.BuyButton}
-                  onClick={() => handleBuy(product.id)} // Panggil handleBuy ketika tombol Buy diklik
+                  className={styles.buyButton}
+                  onClick={() => handleBuy(product.id)}
                 >
                   Buy
                 </button>
@@ -108,22 +145,23 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Modal Konfirmasi */}
+      {/* Confirmation Modal */}
       <ConfirmationModal
         show={showModal}
         message="Are you sure you want to buy this product?"
-        onConfirm={handleCheckout} // Konfirmasi checkout
-        onClose={() => setShowModal(false)} // Tutup modal tanpa membeli
+        onConfirm={handleCheckout}
+        onClose={() => setShowModal(false)}
       />
 
-      {/* Modal Notifikasi */}
+      {/* Notification Modal */}
       <Modal
         message={notificationMessage}
         show={showNotification}
-        onClose={() => setShowNotification(false)} // Tutup notifikasi secara manual jika diperlukan
+        onClose={() => setShowNotification(false)}
       />
     </div>
   );
 };
+
 
 export default Home;

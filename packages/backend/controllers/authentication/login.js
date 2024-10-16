@@ -1,7 +1,7 @@
-import { UserModel } from "../../models/UserModel.js";  // Import UserModel and init function
-import { AdminModel } from "../../models/AdminModel.js"; // Import AdminModel and init function
-import { SellerModel} from "../../models/SellerModel.js"; // Import SellerModel and init function
-import { ShopperModel } from "../../models/ShopperModel.js"; // Import ShopperModel and init function
+import { UserModel } from "../../models/UserModel.js";  
+import { AdminModel } from "../../models/AdminModel.js"; 
+import { SellerModel} from "../../models/SellerModel.js"; 
+import { ShopperModel } from "../../models/ShopperModel.js"; 
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -9,10 +9,16 @@ import dotenv from "dotenv";
 dotenv.config();
 const config = process.env;
 
+/**
+ * Handles user login and generates a JWT token based on the user's role and active status
+ * @param {Object} req - The request object containing user information
+ * @param {Object} res - The response object for sending the response
+ * @returns {Promise} - Resolves to a JSON response with the JWT token and user data
+ */
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        
+
         // Basic input validation
         if (!email || !password) {
             return res.status(400).json({
@@ -31,7 +37,6 @@ const login = async (req, res) => {
                 status: 404,
             });
         }
-        const isActive = user.isActive;
 
         // Verify password
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -68,7 +73,7 @@ const login = async (req, res) => {
                 email: user.email,
                 userId: user.id,
                 role: user.role,
-                isActive: user.isActive,  // Add isActive status to the token
+                isActive: user.isActive,  // Include isActive status in the token
             },
             config.TOKEN,
             { expiresIn: '1d' }  // Token valid for 1 day

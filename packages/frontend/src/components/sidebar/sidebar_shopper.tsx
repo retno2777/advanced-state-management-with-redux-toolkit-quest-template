@@ -1,50 +1,61 @@
-// components/SidebarShopper.tsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../features/auth/authSlice'; // Import action logout dari authSlice
-import { resetShopperState } from '../../features/shopper/shopperSlice'; // Import action resetProfile dari shopperSlice
-import { resetProductState } from '../../features/product/productSlice'; // Import action resetProductState dari productSlice
-import {resetCartState} from '../../features/cart/cartSlice';
+import { logout } from '../../features/auth/authSlice';
+import { resetShopperState } from '../../features/shopper/shopperSlice';
+import { resetProductState } from '../../features/product/productSlice';
+import { resetCartState } from '../../features/cart/cartSlice';
 import { resetOrderState } from '../../features/order/shopper/ordersShopperSlice';
-import styles from '../style/Sidebar-shopper.module.css'; // Buat style module khusus untuk Sidebar Shopper
+import styles from '../style/Sidebar-shopper.module.css';
 
+/**
+ * The navigation bar component for shopper
+ * 
+ * This component renders a navigation bar with links to the shopper's home page, cart, orders, order history, and profile
+ * 
+ * @returns A JSX element representing the navigation bar
+ */
 const SidebarShopper = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Fungsi untuk menangani logout
+  /**
+   * Handles the logout process
+   * 
+   * Dispatches the logout action, resets the shopper state, product state, cart state, and order state, and navigates to the home page
+   */
   const handleLogout = () => {
-    dispatch(logout()); // Panggil action logout dari auth slice
-    dispatch(resetShopperState()); // Panggil action resetProfile dari shopper slice
-    dispatch(resetProductState()); // Panggil action resetProductState dari product slice
+    dispatch(logout());
+    dispatch(resetShopperState());
+    dispatch(resetProductState());
     dispatch(resetCartState());
     dispatch(resetOrderState());
-    navigate('/'); // Redirect ke halaman home atau login setelah logout
+    navigate('/');
   };
 
   return (
+    // Render the sidebar navigation bar with links to various shopper pages
     <div className={styles.sidebar}>
       <ul>
         <li>
-          <Link to="/home-shopper">Home</Link> {/* Opsi Beranda */}
+          <Link to="/home-shopper">Home</Link>
         </li>
         <li>
-          <Link to="/shopper/cart">Cart</Link> {/* Opsi Keranjang */}
+          <Link to="/shopper/cart">Cart</Link>
         </li>
         <li>
-          <Link to="/shopper/orders/pending">Order</Link> {/* Opsi Pesanan */}
+          <Link to="/shopper/orders/pending">Order</Link>
         </li>
         <li>
-          <Link to="/shopper/order-history">Order History</Link> {/* Opsi Riwayat Pesanan */}
+          <Link to="/shopper/order-history">Order History</Link>
         </li>
         <li>
-          <Link to="/shopper-profile">Profile</Link> {/* Opsi Profil */}
+          <Link to="/shopper-profile">Profile</Link>
         </li>
       </ul>
       <button className={styles.logoutButton} onClick={handleLogout}>
         Logout
-      </button> {/* Tombol logout */}
+      </button>
     </div>
   );
 };

@@ -1,77 +1,138 @@
+/*
+ * SellerRefundRequestsPage.module.css
+ * This is the CSS for the SellerRefundRequestsPage.
+ * It contains the styles for the page, including the container, main content, and the list of orders.
+ */
 .container {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
+    margin-left: 12%;
 }
 
 .mainContent {
     flex: 1;
     padding: 20px;
-    background-color: #ffffff;
-    margin-left: 12%;
+    box-sizing: border-box;
 }
 
 .orderList {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* Mengatur 5 kolom grid */
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    margin-top: 20px;
 }
 
 .orderCard {
     display: flex;
-    flex-direction: column; /* Konten vertikal */
-    background-color: #fff;
-    border: 1px solid #e3e6e8;
+    flex-direction: column;
+    background-color: white;
     border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    max-width: 300px;
 }
 
 .imageWrapper {
-    text-align: center;
+    width: 200px;
+    height: 200px;
+    margin: auto;
     margin-bottom: 15px;
 }
 
 .productImage {
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 .orderDetails {
-    flex: 1;
-    text-align: left; /* Konten teks rata kiri */
-    margin-bottom: auto; /* Memastikan tombol ada di bawah */
+    margin-top: 10px;
+}
+
+.orderDetails h2 {
+    text-align: center;
+}
+
+.orderTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.orderTable td {
+    padding: 8px;
+    vertical-align: top;
+}
+
+.orderTable td:first-child {
+    width: 40%;
+    font-weight: bold;
+    color: #333;
+}
+
+.orderTable td:nth-child(2) {
+    width: 5%;
+    text-align: center;
+    color: #777;
+}
+
+.orderTable td:nth-child(3) {
+    width: 55%;
+    color: #555;
 }
 
 .buttonGroup {
     display: flex;
     justify-content: space-between;
-    margin-top: auto; /* Menyebabkan tombol berada di bagian bawah kartu */
+    margin-top: 10px;
+    position: relative;
+    bottom: 0;
+}
+
+.approveButton,
+.rejectButton {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .approveButton {
     background-color: #28a745;
     color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+}
+
+.approveButton:hover {
+    background-color: #218838;
 }
 
 .rejectButton {
     background-color: #dc3545;
     color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
-.notification {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 4px;
+.rejectButton:hover {
+    background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .orderList {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .orderList {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .orderTable td {
+        padding: 6px;
+        font-size: 0.9rem;
+    }
 }

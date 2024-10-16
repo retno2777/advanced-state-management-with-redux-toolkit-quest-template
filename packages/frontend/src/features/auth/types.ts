@@ -1,4 +1,11 @@
-// Interface untuk User Detail yang lengkap
+/**
+ * This file contains all the types used in the auth feature
+ * 
+ * All the types are exported from this file
+ * 
+ * @package auth
+ * @subpackage types
+ */
 export interface UserDetails {
 	id: number;
 	firstName: string;
@@ -11,35 +18,31 @@ export interface UserDetails {
 	userId: number;
 	createdAt: string;
 	updatedAt: string;
-  }
-  
-  // Interface untuk Login Request
-  export interface LoginRequest {
+}
+
+
+export interface LoginRequest {
 	email: string;
 	password: string;
 	rememberMe: boolean;
-  }
-  
-  // Interface untuk Register Response dari API
-  export interface RegisterResponse {
+}
+export interface RegisterResponse {
 	message: string;
 	ok?: boolean;
-  }
-  
-  // Interface untuk Register Request - Seller
-  export interface RegisterSellerRequest {
-	role: 'seller'; // Fixed role untuk seller
+}
+
+export interface RegisterSellerRequest {
+	role: 'seller'; // Fixed role for seller
 	storeName: string;
 	name: string;
 	phoneNumber: string;
 	address?: string;
 	email: string;
 	password: string;
-  }
-  
-  // Interface untuk Register Request - Shopper
-  export interface RegisterShopperRequest {
-	role: 'shopper'; // Fixed role untuk shopper
+}
+
+export interface RegisterShopperRequest {
+	role: 'shopper'; // Fixed role for shopper
 	firstName: string;
 	lastName: string;
 	phoneNumber: string;
@@ -47,10 +50,8 @@ export interface UserDetails {
 	address?: string;
 	email: string;
 	password: string;
-  }
-  
-  // Interface untuk User Response (termasuk login)
-  export interface UserResponse {
+}
+export interface UserResponse {
 	token: string;
 	email: string;
 	role: string;
@@ -58,10 +59,9 @@ export interface UserDetails {
 	userDetails: UserDetails;
 	status: number;
 	ok: boolean;
-  }
-  
-  // User structure yang akan disimpan di state
-  export interface User {
+}
+
+export interface User {
 	id: number;
 	name: string;
 	firstName: string;
@@ -72,17 +72,15 @@ export interface UserDetails {
 	address: string;
 	birthDay: string;
 	isActive: boolean;
-  }
-  
-  // Type untuk AuthState
-  export type AuthState = {
+}
+
+export type AuthState = {
 	user: User | null;
 	token: string | null;
-  };
-  
-  // Interface untuk LogOut Response
-  export interface LogOutResponse {
+	error: string | null;
+};
+
+export interface LogOutResponse {
 	message: string;
 	ok?: boolean;
-  }
-  
+}

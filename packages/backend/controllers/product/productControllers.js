@@ -1,40 +1,48 @@
 import { ProductModel } from "../../models/ProductModel.js";
-import { sequelizePharma as sequelize } from "../../database/db.js"; // Impor sequelizePharma as sequelize
-import { SellerModel } from "../../models/SellerModel.js";  // Add SellerModel
-import { SellerOrderModel } from "../../models/SellerOrderModel.js"; // Impor model transaksi
-import { Op } from "sequelize";  // Untuk operator sequelize
+import { sequelizePharma as sequelize } from "../../database/db.js";
+import { SellerModel } from "../../models/SellerModel.js";
+import { SellerOrderModel } from "../../models/SellerOrderModel.js";
+import { Op } from "sequelize";
 
-// Function to convert image buffer to Base64
+/**
+ * Converts an image buffer to a base64 string
+ * @param {Buffer} imageBuffer - The image buffer to convert
+ * @returns {String} - The base64 string representation of the image, or null if the imageBuffer is null or undefined
+ */
 const convertImageToBase64 = (imageBuffer, format) => {
     return imageBuffer ? `data:${format};base64,${imageBuffer.toString('base64')}` : null;
 };
 
-// Function to add a new product
+/**
+ * Function to add a new product
+ * @param {Object} req - The request object containing product details
+ * @param {Object} res - The response object to send back the response
+ * @returns {Object} - JSON response indicating success or failure
+ */
 const createProduct = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
-        const { productName, price, stock, description, expiry_date } = req.body;  // Menggunakan expiry_date
-        const userId = req.user.userId;  // Ambil userId dari token terverifikasi
+        const { productName, price, stock, description, expiry_date } = req.body;
+        const userId = req.user.userId;
 
-        // Lakukan pencarian sellerId berdasarkan userId
+        // Find the seller by userId
         const seller = await SellerModel.findOne({ where: { userId: userId } });
         if (!seller) {
             return res.status(404).json({ message: "Seller not found" });
         }
 
-        const sellerId = seller.id;  // Ambil sellerId dari hasil pencarian
-        console.log("Seller ID:", sellerId);  // Cetak sellerId untuk debugging
+        const sellerId = seller.id;
 
-        // Buat produk baru
+        // Create a new product
         const newProduct = await ProductModel.create({
             productName,
             price,
             stock,
             description,
-            expiry_date,  // Simpan expiry date
-            sellerId,  // Gunakan sellerId yang ditemukan
-            productImage: req.file ? req.file.buffer : null,  // Simpan gambar jika ada
-            pictureFormat: req.file ? req.file.mimetype : null  // Simpan format gambar jika ada
+            expiry_date,
+            sellerId,
+            productImage: req.file ? req.file.buffer : null,
+            pictureFormat: req.file ? req.file.mimetype : null
         }, { transaction });
 
         await transaction.commit();
@@ -47,24 +55,30 @@ const createProduct = async (req, res) => {
     }
 };
 
-// Function to update an existing product
+/**
+ * Update an existing product
+ * @param {Object} req - The request object containing product update details
+ * @param {Object} res - The response object to send back the response
+ * @returns {Promise} - Resolves to a JSON response indicating success or failure
+ */
 const updateProduct = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
-        const { productId } = req.params;
-        const { productName, price, stock, description, expiry_date } = req.body;
-        const userId = req.user.userId;  // Ambil userId dari token terverifikasi
+        const { productId } = req.params; // Retrieve productId from request parameters
+        const { productName, price, stock, description, expiry_date } = req.body; // Retrieve product details from request body
+        const userId = req.user.userId; // Retrieve userId from authenticated user token
 
-        // Lakukan pencarian sellerId berdasarkan userId
+        // Find the seller by userId
         const seller = await SellerModel.findOne({ where: { userId: userId } });
         if (!seller) {
             return res.status(404).json({ message: "Seller not found" });
         }
 
-        const sellerId = seller.id;  // Ambil sellerId dari hasil pencarian
+        const sellerId = seller.id; // Get sellerId from seller object
+
         // Check if the product exists and is owned by the currently logged-in seller
         const product = await ProductModel.findOne({
-            where: { id: productId, sellerId },
+            where: { id: productId, sellerId }, // Ensure the product belongs to the seller
             transaction
         });
 
@@ -72,41 +86,48 @@ const updateProduct = async (req, res) => {
             return res.status(404).json({ message: "Product not found", ok: false });
         }
 
-        // Update product with new data
+        // Update product with new data, retaining existing values if not provided in the request
         await product.update({
             productName: productName || product.productName,
             price: price || product.price,
             stock: stock || product.stock,
             description: description || product.description,
             expiry_date: expiry_date || product.expiry_date,
-            productImage: req.file ? req.file.buffer : product.productImage,  // Update image if provided
-            pictureFormat: req.file ? req.file.mimetype : product.pictureFormat  // Update image format if provided
+            productImage: req.file ? req.file.buffer : product.productImage, // Update image if a new file is provided
+            pictureFormat: req.file ? req.file.mimetype : product.pictureFormat // Update format if a new file is provided
         }, { transaction });
 
-        await transaction.commit();
+        await transaction.commit(); // Commit transaction if successful
         return res.status(200).json({ message: "Product updated successfully", product });
 
     } catch (error) {
-        await transaction.rollback();
+        await transaction.rollback(); // Rollback transaction in case of error
         console.error(error);
         return res.status(500).json({ message: "Server error during product update" });
     }
 };
 
-// Function to delete a product
+/**
+ * Function to delete a product
+ * @param {Object} req - The request object containing the product ID to be deleted
+ * @param {Object} res - The response object to send back the response
+ * @returns {Promise} - Resolves to a JSON response indicating success or failure
+ */
 const deleteProduct = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
         const { productId } = req.params;
         const userId = req.user.userId;  // Retrieve sellerId from the authenticated user token
 
+        // Retrieve the seller object using the userId
         const seller = await SellerModel.findOne({ where: { userId: userId } });
         if (!seller) {
             return res.status(404).json({ message: "Seller not found" });
         }
 
-        const sellerId = seller.id;  // Ambil sellerId dari hasil pencarian
-        // Check if the product is owned by the logged-in seller
+        const sellerId = seller.id;
+
+        // Retrieve the product object using the productId and sellerId
         const product = await ProductModel.findOne({
             where: { id: productId, sellerId },
             transaction
@@ -122,7 +143,7 @@ const deleteProduct = async (req, res) => {
                 productId,
                 sellerId,
                 shippingStatus: {
-                    [Op.or]: ['Pending', 'Shipped', 'Delivered']  // Cek status pengiriman
+                    [Op.or]: ['Pending', 'Shipped', 'Delivered']
                 }
             },
             transaction
@@ -150,12 +171,27 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-// Function to view all products (for shoppers)
+
+/**
+ * Function to view all products (for shoppers)
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise} - Resolves to a JSON response indicating success or failure.
+ */
 const viewAllProducts = async (req, res) => {
     try {
         // Retrieve all products from the database
         const products = await ProductModel.findAll({
-            attributes: ['id', 'productName', 'price', 'stock', 'description', 'productImage', 'pictureFormat', 'expiry_date']  // Include image and format
+            attributes: [
+                'id',  // Product ID
+                'productName',  // Product name
+                'price',  // Product price
+                'stock',  // Product stock
+                'description',  // Product description
+                'productImage',  // Product image
+                'pictureFormat',  // Product image format
+                'expiry_date'  // Product expiration date
+            ]
         });
 
         if (!products || products.length === 0) {
@@ -170,7 +206,7 @@ const viewAllProducts = async (req, res) => {
             stock: product.stock,
             description: product.description,
             expiryDate: product.expiry_date,
-            productImage: convertImageToBase64(product.productImage, product.pictureFormat)  // Use separate function
+            productImage: convertImageToBase64(product.productImage, product.pictureFormat)
         }));
 
         return res.status(200).json({ products: formattedProducts });
@@ -181,13 +217,29 @@ const viewAllProducts = async (req, res) => {
     }
 };
 
+/**
+ * Function to view a limited number of products (6 by default)
+ * @param {Object} req - The request object containing user information.
+ * @param {Object} res - The response object for sending the response.
+ * @returns {Promise} - Resolves to a JSON response with 6 products.
+ */
 const viewLimitedProducts = async (req, res) => {
     try {
-        // Retrieve 6 products from the database
+        // Retrieve a limited number of products from the database
+        // The limit can be changed by modifying the 'limit' option
         const products = await ProductModel.findAll({
-            attributes: ['id', 'productName', 'price', 'stock', 'description', 'productImage', 'pictureFormat', 'expiry_date'],  // Include image and format
+            attributes: [
+                'id',  // Product ID
+                'productName',  // Product name
+                'price',  // Product price
+                'stock',  // Product stock
+                'description',  // Product description
+                'productImage',  // Product image
+                'pictureFormat',  // Product image format
+                'expiry_date'  // Product expiration date
+            ],
             limit: 6,  // Limit to 6 products
-            order: [['createdAt', 'DESC']]  // Optional: Order by creation date, or you can change to another column
+            order: [['createdAt', 'DESC']]  // Order by creation date, or you can change to another column
         });
 
         if (!products || products.length === 0) {
@@ -202,7 +254,7 @@ const viewLimitedProducts = async (req, res) => {
             stock: product.stock,
             description: product.description,
             expiryDate: product.expiry_date,
-            productImage: convertImageToBase64(product.productImage, product.pictureFormat)  // Use separate function
+            productImage: convertImageToBase64(product.productImage, product.pictureFormat)
         }));
 
         return res.status(200).json({ products: formattedProducts });
@@ -213,20 +265,37 @@ const viewLimitedProducts = async (req, res) => {
     }
 };
 
+/**
+ * Function to view all products associated with a seller
+ * @param {Object} req - The request object containing user information.
+ * @param {Object} res - The response object for sending the response.
+ * @returns {Promise} - Resolves to a JSON response with the list of products associated with the seller.
+ */
 const viewAllProductsSeller = async (req, res) => {
     try {
-        const userId = req.user.userId;  // Ambil userId dari token terverifikasi
-        // Retrieve sellerId from authenticated user
+        const userId = req.user.userId;  // Retrieve userId from authenticated user
+
+        // Find the sellerId associated with the user
         const seller = await SellerModel.findOne({ where: { userId: userId } });
         if (!seller) {
             return res.status(404).json({ message: "Seller not found" });
         }
 
-        const sellerId = seller.id;  // Ambil sellerId dari hasil pencarian
-        // Retrieve all products for the authenticated seller from the database
+        const sellerId = seller.id;  // Get sellerId from seller object
+
+        // Retrieve all products associated with the seller
         const products = await ProductModel.findAll({
             where: { sellerId }, // Filter by sellerId
-            attributes: ['id', 'productName', 'price', 'stock', 'description', 'productImage', 'pictureFormat', 'expiry_date']  // Include image and format
+            attributes: [
+                'id',  // Product ID
+                'productName',  // Product name
+                'price',  // Product price
+                'stock',  // Product stock
+                'description',  // Product description
+                'productImage',  // Product image
+                'pictureFormat',  // Product image format
+                'expiry_date'  // Product expiration date
+            ]
         });
 
         if (!products || products.length === 0) {
@@ -252,23 +321,28 @@ const viewAllProductsSeller = async (req, res) => {
     }
 };
 
-// Function to get product by ID
+/**
+ * Function to get a product by its ID
+ * @param {Object} req - The request object containing the product ID in the params
+ * @param {Object} res - The response object to send back the response
+ * @returns {Promise} - Resolves to a JSON response with the product details or an error message
+ */
 const getProductById = async (req, res) => {
     try {
-        const { id } = req.params; // Ambil ID produk dari parameter URL
+        const { id } = req.params; // Extract product ID from request parameters
 
-        // Cari produk berdasarkan ID
+        // Find the product by its ID from the database
         const product = await ProductModel.findOne({
-            where: { id },  // Cari produk dengan ID
-            attributes: ['id', 'productName', 'price', 'stock', 'description', 'productImage', 'pictureFormat', 'expiry_date']  // Ambil atribut produk
+            where: { id },
+            attributes: ['id', 'productName', 'price', 'stock', 'description', 'productImage', 'pictureFormat', 'expiry_date']
         });
 
-        // Jika produk tidak ditemukan
+        // Check if the product exists
         if (!product) {
             return res.status(404).json({ message: "Product not found", ok: false });
         }
 
-        // Format data produk dan konversi gambar menjadi Base64 jika ada
+        // Format the product details, including converting the image to Base64
         const formattedProduct = {
             id: product.id,
             productName: product.productName,
@@ -276,16 +350,17 @@ const getProductById = async (req, res) => {
             stock: product.stock,
             description: product.description,
             expiryDate: product.expiry_date,
-            productImage: convertImageToBase64(product.productImage, product.pictureFormat) // Konversi gambar jika ada
+            productImage: convertImageToBase64(product.productImage, product.pictureFormat)
         };
 
-        // Kirimkan produk sebagai respon
+        // Respond with the formatted product details
         return res.status(200).json({ product: formattedProduct });
 
     } catch (error) {
         console.error(error);
+        // Handle server errors
         return res.status(500).json({ message: "Server error during fetching product by ID" });
     }
-}
+};
 
 export { createProduct, updateProduct, deleteProduct, viewAllProducts, getProductById, viewAllProductsSeller, viewLimitedProducts };

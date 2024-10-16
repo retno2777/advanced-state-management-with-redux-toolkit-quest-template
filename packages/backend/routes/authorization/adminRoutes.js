@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { tokenVerification, isActiveCheck, adminAccess } from "../../security/authentication.js";
-import { viewAllSellers, viewAllShoppers, deactivateUser, deleteUser,activateUser } from "../../controllers/admin/userManagement/adminUserManagementController.js";
+import { viewAllSellers, viewAllShoppers, deactivateUser, deleteUser,activateUser } from "../../controllers/admin/adminUserManagementController.js";
 
 // Create a new router for admin
 const adminRoute = Router();

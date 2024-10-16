@@ -1,9 +1,16 @@
 import { UserModel } from "../../models/UserModel.js";
 import { SellerModel } from "../../models/SellerModel.js";
-import { ShopperModel } from "../../models/ShopperModel.js";  // Pastikan ShopperModel diimport
+import { ShopperModel } from "../../models/ShopperModel.js";  
 import bcrypt from "bcryptjs";
-import { sequelizePharma as sequelize } from "../../database/db.js";  // Import sequelize instance
+import { sequelizePharma as sequelize } from "../../database/db.js";  
 
+/**
+ * Handles user registration and stores the user in the database.
+ * Based on the role, it will create a corresponding seller or shopper entry.
+ * @param {Object} req - The request object containing user information
+ * @param {Object} res - The response object for sending the response
+ * @returns {Promise} - Resolves to a JSON response with the success message
+ */
 const register = async (req, res) => {
     const t = await sequelize.transaction();  // Start a transaction
     try {

@@ -1,74 +1,103 @@
+/*
+ * OrderHistoryPage.module.css
+ * This is the CSS for the OrderHistoryPage.
+ * It contains the styles for the page, including the container, main content, and the list of orders.
+ */
 .container {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
+    margin-left: 12%;
 }
 
 .mainContent {
     flex: 1;
     padding: 20px;
-    margin-left: 12%;
-}
-
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
+    box-sizing: border-box;
 }
 
 .orderList {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    /* Tampilkan 3 card per baris */
     gap: 20px;
-    /* Jarak antar card */
+    margin-top: 20px;
 }
-
-
 
 .orderCard {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: #fff;
-    border: 1px solid #e3e6e8;
+    background-color: white;
     border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    max-width: 300px;
 }
 
 .imageWrapper {
-    width: 100%;
-    /* Membuat kontainer gambar memenuhi lebar */
-    display: flex;
-    justify-content: center;
-    /* Memastikan gambar di tengah secara horizontal */
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    margin-bottom: 10px;
 }
 
 .productImage {
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    /* Menambahkan jarak bawah untuk memisahkan gambar dari teks */
+    border-radius: 8px;
 }
 
 .orderDetails {
+    margin-top: 10px;
     width: 100%;
-    /* Memastikan teks mengisi lebar penuh */
-    text-align: left;
-    /* Menjaga teks tetap rata kiri */
 }
 
 .orderDetails h2 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
+    text-align: center;
+}
+
+.orderTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.orderTable td {
+    padding: 8px;
+    vertical-align: top;
+}
+
+.orderTable td:first-child {
+    width: 40%;
+    font-weight: bold;
     color: #333;
 }
 
-.orderDetails p {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 5px;
+.orderTable td:nth-child(2) {
+    width: 5%;
+    text-align: center;
+    color: #777;
+}
+
+.orderTable td:nth-child(3) {
+    width: 55%;
+    color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .orderList {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .orderList {
+        grid-template-columns: 1fr;
+    }
+
+    .orderTable td {
+        font-size: 0.9rem;
+    }
 }

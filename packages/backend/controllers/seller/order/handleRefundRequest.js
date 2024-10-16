@@ -8,6 +8,16 @@ import { SellerModel } from "../../../models/SellerModel.js";
 import { ShopperModel } from "../../../models/ShopperModel.js";  
 import { UserModel } from "../../../models/UserModel.js";  
 
+/**
+ * Handles refund request for a given order item.
+ * Updates the order status and payment status of the order item and seller order
+ * to either "Cancelled" and "Refunded" (if approved) or "Paid" (if rejected).
+ * Updates product stock and moves data to OrderHistoryModel (for shopper) and
+ * OrderHistorySellerModel (for seller).
+ * @param {Object} req - Request object containing orderId and action (approve/reject)
+ * @param {Object} res - Response object to send back the response.
+ * @returns {Promise} - Resolves to the response object.
+ */
 const handleRefundRequest = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
@@ -134,7 +144,7 @@ const handleRefundRequest = async (req, res) => {
         } else if (action === "reject") {
             // Update order status to 'Paid'
             orderItem.shippingStatus = "Paid";
-            sellerOrder.shippingStatus = "Paid";
+            sellerOrder.shippingStatus = "Pending";
             await orderItem.save({ transaction });
             await sellerOrder.save({ transaction });
 

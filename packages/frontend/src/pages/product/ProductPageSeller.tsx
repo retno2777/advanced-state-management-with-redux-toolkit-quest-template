@@ -7,11 +7,24 @@ import { RootState, AppDispatch } from '../../app/store';
 import { getProducts, deleteProduct } from '../../features/product/productSlice';
 import ConfirmationModal from '../../components/modal/modal_confirmation';
 import NotificationModal from '../../components/modal/modal_notification';
+import Footer from '../../components/navbar_footer/footer';
 
-const ProductPageSeller = () => {
+/**
+ * ProductPageSeller component
+ *
+ * This component renders the product page for sellers. It displays a list of
+ * products, and allows the seller to create a new product, update an existing
+ * product, or delete a product.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
+const ProductPageSeller: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { products, loading, error } = useSelector((state: RootState) => state.products);
+  /**
+   * Select the products and loading state from the state.
+   */
+  const { products, loading } = useSelector((state: RootState) => state.products);
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
@@ -19,44 +32,64 @@ const ProductPageSeller = () => {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState<string>('');
 
+  /**
+   * Fetch the products when the component mounts.
+   */
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
+  /**
+   * Handle the delete button click event.
+   *
+   * @param {number} productId The ID of the product to delete.
+   */
   const handleDeleteClick = (productId: number) => {
     setSelectedProductId(productId);
     setShowConfirmationModal(true);
   };
 
+  /**
+   * Handle the confirm delete button click event.
+   */
   const handleConfirmDelete = async () => {
     if (selectedProductId !== null) {
-      const resultAction = await dispatch(deleteProduct(selectedProductId));
-      if (deleteProduct.fulfilled.match(resultAction)) {
-        setNotificationMessage('Product deleted successfully!');
-        setShowNotificationModal(true);
-      } else {
-        setNotificationMessage('Failed to delete product.');
-        setShowNotificationModal(true);
+      try {
+        const resultAction = await dispatch(deleteProduct(selectedProductId));
+
+        if (deleteProduct.fulfilled.match(resultAction)) {
+          setNotificationMessage('Product deleted successfully!');
+        } else {
+          setNotificationMessage(resultAction.payload as string || 'Failed to delete product.');
+        }
+      } catch {
+        setNotificationMessage('An error occurred while deleting the product.');
       }
 
-      // Tutup modal notifikasi secara otomatis setelah 3 detik
+      setShowNotificationModal(true);
       setTimeout(() => {
         setShowNotificationModal(false);
-      }, 3000); // 3000ms = 3 detik
+      }, 3000);
     }
     setShowConfirmationModal(false);
   };
 
+  /**
+   * Handle the cancel delete button click event.
+   */
   const handleCancelDelete = () => {
     setShowConfirmationModal(false);
   };
 
+  /**
+   * Handle the close notification modal event.
+   */
   const closeNotificationModal = () => {
     setShowNotificationModal(false);
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.pageContainer}>
       <SidebarSeller />
       <div className={styles.mainContent}>
         <h1>Product Management</h1>
@@ -64,21 +97,48 @@ const ProductPageSeller = () => {
 
         {loading ? (
           <p>Loading products...</p>
-        ) : error ? (
-          <p>Error: {error}</p>
         ) : (
           <div className={styles.productList}>
             {products.map(product => (
               <div key={product.id} className={styles.productCard}>
-                <img src={product.productImage || 'https://via.placeholder.com/150'} alt={product.productName} className={styles.productImage} />
-                <h3>{product.productName}</h3>
-                <p>{product.description}</p>
-                <p><strong>${product.price}</strong></p>
-                {product.expiryDate ? (
-                  <p><strong>Expiry Date:</strong> {new Date(product.expiryDate).toLocaleDateString()}</p>
-                ) : (
-                  <p><strong>Expiry Date:</strong> ""</p>
-                )}
+                <img
+                  src={product.productImage || 'https://via.placeholder.com/150'}
+                  alt={product.productName}
+                  className={styles.productImage}
+                />
+                <table className={styles.productTable}>
+                  <tbody>
+                    <tr>
+                      <td><strong>Product Name</strong></td>
+                      <td>:</td>
+                      <td> {product.productName}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Description</strong></td>
+                      <td>:</td>
+                      <td> {product.description}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Price</strong></td>
+                      <td>:</td>
+                      <td> ${product.price}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Stock</strong></td>
+                      <td>:</td>
+                      <td>{product.stock}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Expiry Date</strong></td>
+                      <td>:</td>
+                      <td>
+                        {product.expiryDate
+                          ? new Date(product.expiryDate).toLocaleDateString()
+                          : 'N/A'}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
                 <div className={styles.productActions}>
                   <Link to={`/update-product/${product.id}`} className={styles.updateButton}>Update</Link>
                   <button className={styles.deleteButton} onClick={() => handleDeleteClick(product.id)}>Delete</button>
@@ -88,7 +148,7 @@ const ProductPageSeller = () => {
           </div>
         )}
 
-        {/* Modal Konfirmasi */}
+        {/* Confirmation Modal */}
         <ConfirmationModal
           show={showConfirmationModal}
           message="Are you sure you want to delete this product?"
@@ -96,13 +156,14 @@ const ProductPageSeller = () => {
           onClose={handleCancelDelete}
         />
 
-        {/* Modal Notifikasi */}
+        {/* Notification Modal */}
         <NotificationModal
           show={showNotificationModal}
           message={notificationMessage}
-          onClose={closeNotificationModal} // Tetap tambahkan close manual jika pengguna ingin menutup lebih awal
+          onClose={closeNotificationModal}
         />
       </div>
+      <Footer />
     </div>
   );
 };

@@ -3,10 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerShopper } from '../features/auth/authSlice';
 import { RootState } from '../app/store';
-import styles from '../pages/styles/RegisterShopper.module.css'; // Import CSS Modules
-import Modal from '../components/modal/modal_notification'; // Import Modal Component
-import Navbar_home from '../components/navbar_footer/navbar-home'; // Import Navbar
+import styles from '../pages/styles/RegisterShopper.module.css';
+import Modal from '../components/modal/modal_notification';
+import Navbar_home from '../components/navbar_footer/navbar-home';
 
+/**
+ * RegisterShopper component
+ * 
+ * This component renders a registration form for shoppers. It allows users
+ * to input their details and submit them for registration. Upon successful
+ * registration, a success modal is displayed. If registration fails, an
+ * error notification is shown.
+ * 
+ * @returns {JSX.Element} The RegisterShopper component.
+ */
 const RegisterShopper = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -16,7 +26,7 @@ const RegisterShopper = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // State untuk modal dan pesan modal
+  // State for modal and modal message
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
@@ -24,29 +34,48 @@ const RegisterShopper = () => {
   const navigate = useNavigate();
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
-  // Effect untuk menampilkan pesan error di modal
-  useEffect(() => {
-    if (error) {
-      setModalMessage(error); // Tampilkan pesan error dari Redux store
-      setShowModal(true); // Tampilkan modal saat ada error
-    }
-  }, [error]);
-
+  /**
+   * Handle form submission and show the modal with the result.
+   * @param {React.FormEvent} e - The form submission event.
+   */
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const resultAction = await dispatch(
-      registerShopper({ role: 'shopper', firstName, lastName, phoneNumber, birthDay, address, email, password })
-    );
+    try {
+      const resultAction = await dispatch(
+        registerShopper({
+          role: 'shopper',
+          firstName,
+          lastName,
+          phoneNumber,
+          birthDay,
+          address,
+          email,
+          password,
+        })
+      );
 
-    // Jika registrasi berhasil, tampilkan modal dengan pesan khusus
-    if (registerShopper.fulfilled.match(resultAction)) {
-      setModalMessage('Shopper registration successful!');
-      setShowModal(true); // Tampilkan modal
-      setTimeout(() => {
-        setShowModal(false);
-        navigate('/login'); // Redirect ke halaman login setelah modal ditutup
-      }, 3000);
+      // Show success modal if registration is successful
+      if (registerShopper.fulfilled.match(resultAction)) {
+        setModalMessage('Shopper registration successful!');
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+          navigate('/login');
+        }, 1000);
+      } else {
+        // If registration fails, display error notification
+        setShowError(true);
+        setErrorMessage(
+          resultAction.payload?.message || 'Registration failed. Please try again.'
+        );
+        setTimeout(() => setShowError(false), 1000);
+      }
+    } catch (error) {
+      // Catch any unexpected errors and display a general error notification
+      setShowError(true);
+      setErrorMessage('An unexpected error occurred. Please try again later.');
+      setTimeout(() => setShowError(false), 3000);
     }
   };
 
@@ -131,7 +160,7 @@ const RegisterShopper = () => {
             </div>
           </div>
 
-          {/* Button register */}
+          {/* Register Button */}
           <div className={styles.button}>
             <input
               type="submit"
@@ -140,11 +169,11 @@ const RegisterShopper = () => {
             />
           </div>
 
-          {/* Error message jika ada */}
+          {/* Display Error Message if any */}
           {error && <p className={styles.errorMessage}>{error}</p>}
         </form>
 
-        {/* Modal untuk pemberitahuan registrasi berhasil atau gagal */}
+        {/* Modal for success or error notifications */}
         <Modal
           message={modalMessage}
           show={showModal}

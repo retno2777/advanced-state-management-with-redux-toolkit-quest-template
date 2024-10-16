@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { tokenVerification, isActiveCheck, sellerAccess } from "../../security/authentication.js"; // Middleware for token verification, active check, and seller access
+import { tokenVerification, isActiveCheck, sellerAccess } from "../../security/authentication.js"; 
 import { loadProfile, updateProfile, changePassword, changeEmail, deleteProfile } from "../../controllers/seller/profile/sellerProfileControllers.js"; 
-import { uploadSingleFile } from "../../middleware/upload.js"; // Corrected import for image upload middleware
+import { uploadSingleFile } from "../../middleware/upload.js"; 
 import { createProduct, updateProduct, deleteProduct, viewAllProductsSeller, getProductById, viewAllProducts } from "../../controllers/product/productControllers.js";  // Import product controllers
-import { getSellerOrders, updateShippingStatus, getSellerOrderHistory } from "../../controllers/seller/order/orderControllers.js"; // Import order controllers
-import { handleRefundRequest } from "../../controllers/seller/order/handleRefundRequest.js";  // Import function to handle refund requests
+import { getSellerOrders, updateShippingStatus, getSellerOrderHistory } from "../../controllers/seller/order/orderControllers.js"; 
+import { handleRefundRequest } from "../../controllers/seller/order/handleRefundRequest.js"; 
 
 const sellerRoute = Router();
 

@@ -1,4 +1,8 @@
-/* Importing Google Fonts - Poppins */
+/*
+ * RegisterSeller.module.css
+ * This is the CSS for the RegisterSeller page.
+ * It contains the styles for the page, including the container, title, and the form.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 .outerContainer {
@@ -8,7 +12,6 @@
 
 .container {
     max-width: 40%;
-    /* Lebar container diperbesar agar dua kolom bisa muat */
     width: 100%;
     background-color: #fff;
     padding: 30px 25px;
@@ -25,7 +28,6 @@
     margin-bottom: 20px;
     text-align: center;
     color: #333;
-    /* Warna teks gelap */
 }
 
 .switchForm {
@@ -47,14 +49,12 @@
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    /* Memberikan jarak antar elemen */
 }
 
 .inputBox {
     flex: 1;
     width: 100%;
     min-width: 48%;
-    /* Membuat input lebih proporsional */
     margin: 0.2rem;
 }
 
@@ -67,26 +67,21 @@
 }
 
 .inputBox input {
-    width: 90%;
+    width: 96%;
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #ced4da;
     outline: none;
     font-size: 15px;
-    background-color: #f9f9f9;
+    background-color: #d6d6d6;
     transition: all 0.3s ease;
 }
 
-.inputBox input[type="text"] {
-    width: 90%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ced4da;
-    outline: none;
-    font-size: 15px;
-    background-color: #f9f9f9;
-    transition: all 0.3s ease;
+.inputBox input[type="text"],
+.inputBox input[type="password"] {
+    width: 100%;
 }
+
 
 .inputBox input:focus {
     border-color: #6a1b9a;
@@ -99,7 +94,7 @@
 
 .button input {
     height: 50px;
-    width: 100%;
+    width: 95%;
     border-radius: 6px;
     border: none;
     color: #fff;
@@ -109,15 +104,9 @@
     cursor: pointer;
     transition: all 0.3s ease;
     background: linear-gradient(135deg, #3d3743, #211e22);
+    margin: auto;
 }
 
 .button input:hover {
     background: linear-gradient(135deg, #2a2a2e, #19191d);
-}
-
-.errorMessage {
-    color: #e74c3c;
-    font-size: 14px;
-    text-align: center;
-    margin-top: 10px;
 }

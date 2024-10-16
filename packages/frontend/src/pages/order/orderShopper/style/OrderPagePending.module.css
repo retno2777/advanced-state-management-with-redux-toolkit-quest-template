@@ -1,120 +1,139 @@
-/* Container utama untuk halaman */
+/*
+ * OrderPagePending.module.css
+ * This is the CSS for the OrderPagePending.
+ * It contains the styles for the page, including the container, main content, and the list of orders.
+ */
 .container {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  background-color: #f1f3f5;
+  margin-left: 12%;
+  ;
 }
 
-/* Konten utama di sebelah sidebar */
 .mainContent {
   flex: 1;
   padding: 20px;
-  background-color: #ffffff;
-  margin-left: 12%;
+  box-sizing: border-box;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-/* Daftar pesanan */
 .orderList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Penyesuaian grid */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  margin-top: 20px;
 }
 
-/* Gaya untuk setiap kartu pesanan */
 .orderCard {
-  background-color: #fff;
-  border: 1px solid #e3e6e8;
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column; /* Flex arah vertikal */
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   justify-content: space-between;
-  transition: box-shadow 0.3s ease;
+  max-width: 300px;
 }
 
-.orderCard:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Wrapper untuk gambar produk */
 .imageWrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  width: 200px;
+  height: 200px;
+  margin: auto;
 }
 
-/* Gambar produk */
 .productImage {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-/* Gaya untuk detail pesanan */
 .orderDetails {
-  flex: 1;
-  text-align: left;
+  margin-top: 10px;
 }
 
 .orderDetails h2 {
-  font-size: 1.2rem;
-  margin-bottom: 5px;
+  text-align: center;
+}
+
+.orderTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.orderTable td {
+  padding: 8px;
+  vertical-align: top;
+}
+
+.orderTable td:first-child {
+  width: 40%;
+  font-weight: bold;
   color: #333;
 }
 
-.orderDetails p {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 5px;
+.orderTable td:nth-child(2) {
+  width: 5%;
+  text-align: center;
+  color: #777;
 }
 
-/* Gaya untuk grup tombol */
+.orderTable td:nth-child(3) {
+  width: 55%;
+  color: #555;
+}
+
 .buttonGroup {
   display: flex;
-  gap: 10px;
   justify-content: space-between;
-  margin-top: 20px; /* Memberi jarak di antara detail dan tombol */
+  margin-top: auto;
 }
 
-/* Tombol untuk membayar sekarang */
-.payButton {
-  background-color: #007bff;
-  color: white;
+.payButton,
+.cancelButton {
+  padding: 10px 20px;
   border: none;
-  padding: 10px;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  flex: 1;
-  transition: background-color 0.3s ease;
+}
+
+.payButton {
+  background-color: #28a745;
+  color: white;
 }
 
 .payButton:hover {
-  background-color: #0056b3;
+  background-color: #218838;
 }
 
-/* Tombol untuk membatalkan pesanan */
 .cancelButton {
-  background-color: #ff4d4f;
+  background-color: #dc3545;
   color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  flex: 1;
-  transition: background-color 0.3s ease;
 }
 
 .cancelButton:hover {
-  background-color: #d32f2f;
+  background-color: #c82333;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+  .orderList {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .payButton,
+  .cancelButton {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orderList {
+    grid-template-columns: 1fr;
+  }
+}

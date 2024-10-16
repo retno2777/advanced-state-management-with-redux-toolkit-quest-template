@@ -1,52 +1,82 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate untuk navigasi
-import { changeShopperPassword } from '../../features/shopper/shopperSlice'; // Import thunk untuk change password shopper
+import { useNavigate } from 'react-router-dom';
+import { changeShopperPassword } from '../../features/shopper/shopperSlice';
 import { RootState } from '../../app/store';
-import Modal from '../../components/modal/modal_notification'; // Import Modal Notifikasi
-import SidebarShopper from '../../components/sidebar/sidebar_shopper'; // Import SidebarShopper
-import styles from './style/ChangeShopperPassword.module.css'; // Import CSS untuk styling
+import Modal from '../../components/modal/modal_notification';
+import SidebarShopper from '../../components/sidebar/sidebar_shopper';
+import styles from './style/ChangeShopperPassword.module.css';
 
+/**
+ * ChangeShopperPassword
+ *
+ * This page is for shopper to change their password
+ * It will show a form that ask for current password and new password
+ * After submitting the form, it will call the changeShopperPassword thunk from shopperSlice
+ * If the thunk is successful, it will show a success modal and navigate to home shopper page
+ * If the thunk is failed, it will show an error modal
+ *
+ * @returns {JSX.Element} The component's JSX element.
+ */
 const ChangeShopperPassword = () => {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [modalTitle, setModalTitle] = useState(''); // State untuk judul modal
+  const [oldPassword, setOldPassword] = useState(''); // Current password
+  const [newPassword, setNewPassword] = useState(''); // New password
+  const [showModal, setShowModal] = useState(false); // Show modal after submitting the form
+  const [modalMessage, setModalMessage] = useState(''); // Message to be displayed in the modal
+  const [modalTitle, setModalTitle] = useState(''); // Title of the modal
 
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
-  const { loading, error } = useSelector((state: RootState) => state.shopper);
+  const navigate = useNavigate();
+  const { loading } = useSelector((state: RootState) => state.shopper);
 
+  /**
+   * Handle form submission
+   *
+   * @param {React.FormEvent} e The form event
+   */
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await dispatch(changeShopperPassword({ oldPassword, newPassword }));
 
-    // Check if password change was successful
-    if (changeShopperPassword.fulfilled.match(result)) {
-      setModalTitle('Success');
-      setModalMessage('Password changed successfully!');
-      setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false);
-        navigate('/home-shopper'); // Navigasi ke halaman home shopper setelah berhasil
-      }, 2000); // Navigasi setelah 2 detik
-    } else {
+    try {
+      // Dispatch and unwrap the result to check if successful
+      const result = await dispatch(changeShopperPassword({ oldPassword, newPassword }));
+      if (changeShopperPassword.fulfilled.match(result)) {
+        setModalTitle('Success');
+        setModalMessage('Your password has been changed successfully!');
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+          navigate('/home-shopper');
+        }, 2000);
+      } else {
+        // Handle error and show the error modal
+        setModalTitle('Error');
+        setModalMessage(result.payload as string || 'Failed to change password. Please try again.');
+        setShowModal(true);
+
+        // Reset the form fields
+        setOldPassword('');
+        setNewPassword('');
+
+        setTimeout(() => setShowModal(false), 3000);
+      }
+    } catch{
+      // Handle error and show the error modal
       setModalTitle('Error');
-      setModalMessage(error || 'Failed to change password');
+      setModalMessage('Failed to change password. Please try again.');
       setShowModal(true);
-      setOldPassword(''); // Reset old password field
-      setNewPassword(''); // Reset new password field
-      setTimeout(() => setShowModal(false), 3000); // Tutup modal setelah 3 detik
+
+      // Reset the form fields
+      setOldPassword('');
+      setNewPassword('');
+
+      setTimeout(() => setShowModal(false), 3000);
     }
   };
 
   return (
     <div className={styles.container}>
-      {/* SidebarShopper di sebelah kiri */}
-      <SidebarShopper />
-      
-      {/* Konten utama di sebelah kanan */}
+      <SidebarShopper /> {/* Sidebar for navigation */}
       <div className={styles.mainContent}>
         <h1>Change Password</h1>
         <form onSubmit={handleChangePassword} className={styles.form}>
@@ -55,8 +85,10 @@ const ChangeShopperPassword = () => {
             <input
               type="password"
               value={oldPassword}
+              placeholder="Enter your current password"
               onChange={(e) => setOldPassword(e.target.value)}
               required
+              className={styles.inputField}
             />
           </div>
           <div className={styles.inputGroup}>
@@ -64,20 +96,21 @@ const ChangeShopperPassword = () => {
             <input
               type="password"
               value={newPassword}
+              placeholder="Enter your new password"
               onChange={(e) => setNewPassword(e.target.value)}
               required
+              className={styles.inputField}
             />
           </div>
-          <button type="submit" disabled={loading} className={styles.button}>
+          <button type="submit" disabled={loading} className={styles.submitButton}>
             {loading ? 'Changing...' : 'Change Password'}
           </button>
-          {error && <p className={styles.errorMessage}>{error}</p>}
         </form>
 
-        {/* Modal Notifikasi */}
+        {/* Notification Modal */}
         {showModal && (
           <Modal
-            title={modalTitle} // Menampilkan judul modal
+            title={modalTitle}
             message={modalMessage}
             show={showModal}
             onClose={() => setShowModal(false)}

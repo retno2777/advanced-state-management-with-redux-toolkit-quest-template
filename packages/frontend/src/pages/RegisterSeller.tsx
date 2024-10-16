@@ -1,52 +1,88 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { registerSeller } from '../features/auth/authSlice'; // Import registerSeller action dari authSlice
+import { registerSeller } from '../features/auth/authSlice';
 import { RootState } from '../app/store';
-import styles from '../pages/styles/RegisterSeller.module.css'; // Import CSS Modules
-import Modal from '../components/modal/modal_notification'; // Import Modal Component
-import Navbar_home from '../components/navbar_footer/navbar-home'; // Import Navbar yang sudah dipisahkan
+import styles from '../pages/styles/RegisterSeller.module.css';
+import Modal from '../components/modal/modal_notification';
+import Navbar_home from '../components/navbar_footer/navbar-home';
 
+/**
+ * RegisterSeller component
+ * 
+ * This component renders a registration form for sellers. It allows users
+ * to input their details and submit them for registration. Upon successful
+ * registration, a success modal is displayed. If registration fails, an
+ * error notification is shown.
+ * 
+ * @returns {JSX.Element} The RegisterSeller component.
+ */
 const RegisterSeller = () => {
-  const [name, setName] = useState('');             // Untuk menyimpan nama penjual
-  const [storeName, setStoreName] = useState('');   // Untuk menyimpan nama toko
+  // State variables for form inputs
+  const [name, setName] = useState('');
+  const [storeName, setStoreName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [birthDay, setBirthDay] = useState('');
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // State untuk modal
+  // State for modals and error notifications
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
+  /**
+   * Handle registration form submission
+   * 
+   * This function dispatches the registerSeller action with the form data.
+   * If registration is successful, a success modal is shown. Otherwise,
+   * an error notification is displayed.
+   * 
+   * @param {React.FormEvent} e - The form submission event.
+   */
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    const resultAction = await dispatch(
-      registerSeller({
-        role: 'seller',
-        name,
-        storeName,
-        phoneNumber,
-        birthDay,
-        address,
-        email,
-        password
-      })
-    );
 
-    // Jika registrasi berhasil, tampilkan modal dengan pesan khusus
-    if (registerSeller.fulfilled.match(resultAction)) {
-      setModalMessage('Seller registration successful!');  // Ubah pesan untuk seller
-      setShowModal(true); // Tampilkan modal
-      setTimeout(() => {
-        setShowModal(false);
-        navigate('/login');  // Redirect ke halaman login setelah modal ditutup
-      }, 3000);
+    try {
+      const resultAction = await dispatch(
+        registerShopper({
+          role: 'shopper',
+          firstName,
+          lastName,
+          phoneNumber,
+          birthDay,
+          address,
+          email,
+          password,
+        })
+      );
+
+      // Show success modal if registration is successful
+      if (registerShopper.fulfilled.match(resultAction)) {
+        setModalMessage('Shopper registration successful!');
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+          navigate('/login');
+        }, 1000);
+      } else {
+        // If registration fails, display error notification
+        setShowError(true);
+        setErrorMessage(
+          resultAction.payload?.message || 'Registration failed. Please try again.'
+        );
+        setTimeout(() => setShowError(false), 1000);
+      }
+    } catch (error) {
+      // Catch any unexpected errors and display a general error notification
+      setShowError(true);
+      setErrorMessage('An unexpected error occurred. Please try again later.');
+      setTimeout(() => setShowError(false), 3000);
     }
   };
 
@@ -59,6 +95,8 @@ const RegisterSeller = () => {
         <div className={styles.switchForm}>
           Want to shop instead? <Link to="/register-shopper" className={styles.link}>Register as a Shopper</Link>
         </div>
+
+        {/* Form for Seller Registration */}
         <form onSubmit={handleRegister}>
           <div className={styles.userDetails}>
             <div className={styles.inputBox}>
@@ -91,15 +129,6 @@ const RegisterSeller = () => {
                 required
               />
             </div>
-            <div className={styles.inputBox}>
-              <span className={styles.details}>Birth Date</span>
-              <input
-                type="date"
-                value={birthDay}
-                onChange={(e) => setBirthDay(e.target.value)}
-              />
-            </div>
-
             {/* Address input field */}
             <div className={`${styles.inputBox} ${styles.fullWidth}`}>
               <span className={styles.details}>Address</span>
@@ -133,19 +162,31 @@ const RegisterSeller = () => {
               />
             </div>
           </div>
+
+          {/* Register button */}
           <div className={styles.button}>
             <input type="submit" value={loading ? 'Registering...' : 'Register'} disabled={loading} />
           </div>
+
+          {/* Error Message if registration fails */}
           {error && <p className={styles.errorMessage}>{error}</p>}
         </form>
 
-
-        {/* Modal untuk pemberitahuan registrasi berhasil */}
+        {/* Modal for successful registration notification */}
         <Modal
-          message={modalMessage}  // Pesan modal sesuai dengan hasil registrasi
-          show={showModal}  // Kontrol tampilan modal
-          onClose={() => setShowModal(false)}  // Fungsi untuk menutup modal
+          message={modalMessage}
+          show={showModal}
+          onClose={() => setShowModal(false)}
         />
+
+        {/* Modal for error notification if registration fails */}
+        {showError && (
+          <Modal
+            message={errorMessage}
+            show={showError}
+            onClose={() => setShowError(false)}
+          />
+        )}
       </div>
     </div>
   );

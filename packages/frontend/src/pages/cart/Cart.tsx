@@ -1,43 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../app/store'; // RootState to access the state
+import { RootState } from '../../app/store';
 import {
   viewCart,
   addItemToCart,
   reduceItemInCart,
   removeItemFromCart,
-  checkoutSelectedItems, // Import checkout action
-} from '../../features/cart/cartSlice'; // Import cart actions
-import SidebarShopper from '../../components/sidebar/sidebar_shopper'; // Import SidebarShopper component
-import ConfirmationModal from '../../components/modal/modal_confirmation'; // Import ConfirmationModal component
-import Modal from '../../components/modal/modal_notification'; // Import Modal for notifications
-import styles from './style/Cart.module.css'; // Import the CSS module for cart styling
+  checkoutSelectedItems,
+} from '../../features/cart/cartSlice';
+import SidebarShopper from '../../components/sidebar/sidebar_shopper';
+import ConfirmationModal from '../../components/modal/modal_confirmation';
+import Modal from '../../components/modal/modal_notification';
+import styles from './style/Cart.module.css';
+import Footer from '../../components/navbar_footer/footer';
+
+/**
+ * Page for cart
+ * 
+ * This page is used to display the cart items
+ * of the shopper. The shopper can select items
+ * to checkout and remove items from the cart.
+ */
 
 const Cart = () => {
   const dispatch = useDispatch();
 
-  // Select cart items and loading state from the Redux state
   const { cartItems, loading } = useSelector((state: RootState) => state.cart);
 
-  // State to manage which items are selected for checkout (default all selected)
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [showModal, setShowModal] = useState(false); // State to control confirmation modal
-  const [showNotification, setShowNotification] = useState(false); // State to control notification modal
-  const [notificationMessage, setNotificationMessage] = useState(''); // State for notification message
+  const [showModal, setShowModal] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
 
-  // Fetch cart items on component mount
   useEffect(() => {
     dispatch(viewCart());
   }, [dispatch]);
 
-  // Update selectedItems state when cartItems changes (default all selected)
   useEffect(() => {
     if (cartItems.length > 0) {
-      setSelectedItems(cartItems.map((item) => item.productId)); // Select all products by default
+      setSelectedItems(cartItems.map((item) => item.productId));
     }
   }, [cartItems]);
 
-  // Function to toggle the selection of a product
+  /**
+   * This function is used to toggle select for a product item in the cart.
+   * If the item is already selected, it will be deselected. If the item is not
+   * selected, it will be selected.
+   * @param {number} productId The ID of the product item.
+   */
   const handleToggleSelect = (productId: number) => {
     if (selectedItems.includes(productId)) {
       setSelectedItems(selectedItems.filter((id) => id !== productId));
@@ -46,68 +56,99 @@ const Cart = () => {
     }
   };
 
-  // Function to increase the quantity of an item
+  /**
+   * This function is used to increase the quantity of a product item in the cart.
+   * It will call the async thunk to increase the quantity of the product item.
+   * After the async thunk is completed, it will call the viewCart action to
+   * update the cart items.
+   * @param {number} productId The ID of the product item.
+   */
   const handleIncreaseQuantity = async (productId: number) => {
     await dispatch(addItemToCart({ productId, quantity: 1 }));
-    dispatch(viewCart()); // Re-fetch the cart items after updating
+    dispatch(viewCart());
   };
 
-  // Function to decrease the quantity of an item
+  /**
+   * This function is used to increase the quantity of a product item in the cart.
+   * It will call the async thunk to increase the quantity of the product item.
+   * After the async thunk is completed, it will call the viewCart action to
+   * update the cart items.
+   * @param {number} productId The ID of the product item.
+   */
   const handleDecreaseQuantity = async (productId: number) => {
     await dispatch(reduceItemInCart({ productId }));
-    dispatch(viewCart()); // Re-fetch the cart items after updating
+    dispatch(viewCart());
   };
 
-  // Function to remove an item from the cart
+  /**
+   * This function is used to remove a product item from the cart.
+   * It will call the async thunk to remove the product item.
+   * After the async thunk is completed, it will call the viewCart action to
+   * update the cart items.
+   * @param {number} productId The ID of the product item.
+   */
   const handleRemoveItem = async (productId: number) => {
-    await dispatch(removeItemFromCart({ productId }));
-
-    // Update the local state directly after removal
-    setSelectedItems(selectedItems.filter((id) => id !== productId));
-
-    // Manually remove the item from the cartItems in the Redux state
-    dispatch(viewCart()); // Alternatively, fetch the cart again to refresh the view
-  };
-
-  // Function to handle checkout for selected items
-  const handleCheckout = async () => {
-    const result = await dispatch(
-      checkoutSelectedItems({ productIds: selectedItems, singleProductId: null, singleProductQuantity: null })
-    );
-    if (checkoutSelectedItems.fulfilled.match(result)) {
-      setNotificationMessage('Checkout successful!');
-    } else {
-      setNotificationMessage('Checkout failed. Please try again.');
+    try {
+      const result = await dispatch(removeItemFromCart({ productId }));
+      if (removeItemFromCart.fulfilled.match(result)) {
+        setSelectedItems(selectedItems.filter((id) => id !== productId));
+        setNotificationMessage('Item removed successfully!');
+      } else {
+        throw new Error(result.payload as string || 'Failed to remove item. Please try again.');
+      }
+    } catch {
+      setNotificationMessage( 'An error occurred while removing the item.');
+    } finally {
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+      dispatch(viewCart());
     }
-
-    // Show notification modal
-    setShowNotification(true);
-
-    // Hide the notification modal after 2 seconds, then refresh the cart
-    setTimeout(() => {
-      setShowNotification(false);
-      dispatch(viewCart()); // Refresh cart after notification
-    }, 2000);
   };
 
-  // Calculate the total price for selected items
+  /**
+   * This function is used to checkout the selected items in the cart.
+   * It will call the async thunk to checkout the selected items.
+   * After the async thunk is completed, it will show a notification
+   * to indicate whether the checkout is successful or not.
+   */
+  const handleCheckout = async () => {
+    try {
+      const result = await dispatch(
+        checkoutSelectedItems({ productIds: selectedItems, singleProductId: null, singleProductQuantity: null })
+      );
+      if (checkoutSelectedItems.fulfilled.match(result)) {
+        setNotificationMessage('Checkout successful!');
+      } else {
+        throw new Error(result.payload as string || 'Checkout failed. Please try again.');
+      }
+    } catch (err: any) {
+      setNotificationMessage(err.message || 'An error occurred during checkout.');
+    } finally {
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+      dispatch(viewCart());
+    }
+  };
+
   const totalPrice = cartItems
-    .filter((item) => selectedItems.includes(item.productId)) // Only include selected items
+    .filter((item) => selectedItems.includes(item.productId))
     .reduce((total, item) => total + item.price * item.quantity, 0);
 
-  // Function to show confirmation modal
   const showConfirmationModal = () => {
     setShowModal(true);
   };
 
-  // Function to handle modal confirmation
+  /**
+   * This function is used to show the confirmation modal.
+   * It will set the showModal state to true.
+   */
   const confirmCheckout = () => {
-    setShowModal(false); // Hide modal
-    handleCheckout(); // Perform checkout
+    setShowModal(false);
+    handleCheckout();
   };
 
   return (
-    <div className={styles.cartContainer}>
+    <div className={styles.Container}>
       <SidebarShopper /> {/* Sidebar for shopper */}
 
       <div className={styles.mainContent}>
@@ -116,7 +157,7 @@ const Cart = () => {
         {loading && <p>Loading cart...</p>}
 
         {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p> // Display this if there are no items in the cart
+          <p>Your cart is empty.</p>
         ) : (
           <>
             <div className={styles.cartItems}>
@@ -124,11 +165,11 @@ const Cart = () => {
                 <div key={`${item.productId}-${index}`} className={styles.cartItem}>
                   <input
                     type="checkbox"
-                    checked={selectedItems.includes(item.productId)} // Checkbox is checked if item is selected
-                    onChange={() => handleToggleSelect(item.productId)} // Toggle selection
+                    checked={selectedItems.includes(item.productId)}
+                    onChange={() => handleToggleSelect(item.productId)}
                   />
                   <img
-                    src={item.productImage || 'https://via.placeholder.com/150'} // Placeholder for missing images
+                    src={item.productImage || 'https://via.placeholder.com/150'}
                     alt={item.productName}
                     className={styles.productImage}
                   />
@@ -166,7 +207,7 @@ const Cart = () => {
               <button
                 className={styles.checkoutButton}
                 onClick={showConfirmationModal}
-                disabled={selectedItems.length === 0} // Disable if no items are selected
+                disabled={selectedItems.length === 0}
               >
                 Proceed to Checkout
               </button>
@@ -174,21 +215,21 @@ const Cart = () => {
           </>
         )}
 
-        {/* Confirmation Modal */}
         <ConfirmationModal
           show={showModal}
           message="Are you sure you want to checkout the selected items?"
           onConfirm={confirmCheckout}
-          onClose={() => setShowModal(false)} // Close modal on "No"
+          onClose={() => setShowModal(false)}
         />
 
-        {/* Notification Modal */}
         <Modal
           message={notificationMessage}
           show={showNotification}
-          onClose={() => setShowNotification(false)} // Manually close the notification if needed
+          onClose={() => setShowNotification(false)}
         />
       </div>
+
+      <Footer /> {/* Footer at the bottom of the page */}
     </div>
   );
 };

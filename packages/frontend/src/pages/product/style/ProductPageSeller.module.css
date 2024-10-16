@@ -1,123 +1,169 @@
-/* ProductPageSeller.module.css */
-
-.container {
+/*
+ * ProductPageSeller.module.css
+ * This is the CSS for the ProductPageSeller.
+ * It contains the styles for the page, including the container, main content, and the list of products.
+ */
+.pageContainer {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
+  margin-left: 12%;
 }
 
 .mainContent {
   flex: 1;
-  padding: 20px;
-  background-color: #f8f9fa;
-  margin-left: 12%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
 }
 
 h1 {
-  font-size: 1.8rem;
-  margin-bottom: 20px;
+  font-size: 2.5rem;
   color: #333;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .createButton {
-  display: inline-block;
-  padding: 8px 16px;
-  background-color: #4caf50;
+  padding: 10px 20px;
+  background-color: #007bff;
   color: white;
-  text-decoration: none;
+  border: none;
   border-radius: 5px;
-  margin-bottom: 15px;
+  font-size: 1.2rem;
+  text-decoration: none;
   transition: background-color 0.3s ease;
+  margin-bottom: 40px;
+  margin-top: 30px;
+  align-self: flex-start;
 }
 
 .createButton:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
 .productList {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  /* Menyesuaikan dengan 4 kolom */
-  gap: 15px;
-  /* Mengurangi jarak antar card */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .productCard {
   background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  margin: 0 auto;
-  display: flex; /* Aktifkan flexbox */
-  flex-direction: column; /* Atur agar konten tersusun secara vertikal */
-  justify-content: center; /* Pusatkan konten secara vertikal */
-  align-items: center; /* Pusatkan konten secara horizontal */ /* Jika perlu agar teks juga ditengah */
-}
-.productCard:hover {
-  transform: translateY(-5px);
-}
-
-.productCard h3 {
-  font-size: 1.2rem;
-  /* Mengurangi ukuran font */
-  color: #333;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
-.productCard p {
-  font-size: 0.9rem;
-  /* Mengurangi ukuran font */
-  color: #555;
-  margin-bottom: 5px;
-  text-align: left;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 300px;
 }
 
 .productImage {
-  width: 200px;
-  /* Set lebar fix */
-  height: 150px;
-  /* Set tinggi fix */
+  width: 100%;
+  height: 200px;
   object-fit: cover;
-  /* Agar gambar tetap proporsional dan memenuhi area */
-  margin-bottom: 10px;
   border-radius: 5px;
- 
+  margin-bottom: 15px;
 }
 
+h3 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.productTable {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+}
+
+.productTable td {
+  padding: 8px 5px;
+}
+
+.productTable td:first-child {
+  font-weight: bold;
+  width: 40%;
+}
+
+.productTable td:nth-child(2) {
+  text-align: left;
+}
 
 .productActions {
-  margin-top: 10px;
-  /* Mengurangi jarak antara deskripsi dan tombol */
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 .updateButton {
-  padding: 6px 12px;
-  /* Mengurangi padding tombol */
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-right: 8px;
-  transition: background-color 0.3s ease;
-}
-
-.updateButton:hover {
-  background-color: #0056b3;
-}
-
-.deleteButton {
-  padding: 6px 12px;
-  /* Mengurangi padding tombol */
-  background-color: #e74c3c;
+  padding: 10px 15px;
+  background-color: #28a745;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  flex: 1;
+  margin-right: 10px;
+  text-align: center;
+}
+
+.updateButton:hover {
+  background-color: #218838;
+
+}
+
+.deleteButton {
+  padding: 10px 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1;
 }
 
 .deleteButton:hover {
-  background-color: #c0392b;
+  background-color: #c82333;
+}
+
+/* Add responsiveness for smaller screens */
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 20px;
+  }
+
+  .createButton {
+    align-self: center;
+  }
+
+  .productList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .productActions {
+    flex-direction: column;
+  }
+
+  .updateButton,
+  .deleteButton {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+/* For larger screens, ensure there are 3 columns maximum */
+@media (min-width: 1200px) {
+  .productList {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

@@ -2,9 +2,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/authenticationRoutes.js";
 import morgan from "morgan";
-import shopperRoute from "./routes/authorization/shopperRoutes.js"; // Rute shopper
-import sellerRoute from "./routes/authorization/sellerRoutes.js"; // Rute seller
-import adminRoute from "./routes/authorization/adminRoutes.js"; // Rute seller
+import shopperRoute from "./routes/authorization/shopperRoutes.js"; 
+import sellerRoute from "./routes/authorization/sellerRoutes.js"; 
+import adminRoute from "./routes/authorization/adminRoutes.js"; 
 import dotenv from "dotenv";
 dotenv.config();
 const config = process.env;

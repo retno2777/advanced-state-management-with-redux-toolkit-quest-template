@@ -1,61 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate untuk navigasi
-import { changeSellerEmail } from '../../features/seller/sellerSlice'; // Import thunk untuk change email
-import { RootState } from '../app/store';
-import Modal from '../../components/modal/modal_notification'; // Import Modal Notifikasi
-import styles from './style/ChangeSellerEmail.module.css'; // Import CSS untuk styling
-import SidebarSeller from '../../components/sidebar/SidebarSeller'; // Import SidebarSeller
+import { useNavigate } from 'react-router-dom';
+import { changeSellerEmail } from '../../features/seller/sellerSlice';
+import { RootState } from '../../app/store';
+import Modal from '../../components/modal/modal_notification';
+import SidebarSeller from '../../components/sidebar/SidebarSeller';
+import styles from './style/ChangeSellerEmail.module.css';
 
-const ChangeSellerEmail = () => {
-  const [currentEmail, setCurrentEmail] = useState(''); // Untuk email yang saat ini terdaftar
-  const [newEmail, setNewEmail] = useState(''); // Untuk email baru yang ingin didaftarkan
-  const [password, setPassword] = useState(''); // Untuk verifikasi password sebelum ganti email
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [modalTitle, setModalTitle] = useState('');
+/**
+ * Page for changing seller email
+ * 
+ * This page is for changing seller email. It will display a form that asks
+ * for current email, new email and password. After submitting the form, it
+ * will call the changeSellerEmail thunk from sellerSlice. If the thunk is
+ * successful, it will show a success modal and navigate to home seller page.
+ * If the thunk is failed, it will show an error modal.
+ * 
+ * @returns {JSX.Element} The component's JSX element.
+ */
+const ChangeSellerEmail: React.FC = () => {
+  const [currentEmail, setCurrentEmail] = useState<string>('');
+  const [newEmail, setNewEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
 
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
-  const { loading, error } = useSelector((state: RootState) => state.seller);
+  const navigate = useNavigate();
+  const { loading } = useSelector((state: RootState) => state.seller);
 
+  /**
+   * Handle form submission
+   * 
+   * This function is called when the form is submitted. It will call the
+   * changeSellerEmail thunk from sellerSlice with the form data as an argument.
+   * If the thunk is successful, it will show a success modal and navigate to
+   * home seller page. If the thunk is failed, it will show an error modal.
+   * 
+   * @param {React.FormEvent} e - The form submission event.
+   */
   const handleChangeEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await dispatch(changeSellerEmail({ currentEmail, newEmail, password }));
 
-    // Check if email change was successful
+    const result = await dispatch(changeSellerEmail({ currentEmail, newEmail, password }));
     if (changeSellerEmail.fulfilled.match(result)) {
       setModalTitle('Success');
       setModalMessage('Email changed successfully!');
       setShowModal(true);
+
       setTimeout(() => {
         setShowModal(false);
-        navigate('/home-seller'); // Navigasi ke halaman home seller setelah berhasil
-      }, 2000); // Navigasi setelah 3 detik
+        navigate('/home-seller');
+      }, 2000);
     } else {
       setModalTitle('Error');
-      setModalMessage(error || 'Failed to change email');
+      setModalMessage(result.payload as string || 'Failed to change email. Please try again.');
       setShowModal(true);
-      setCurrentEmail(''); // Reset current email field
-      setNewEmail(''); // Reset new email field
-      setPassword(''); // Reset password field
-      setTimeout(() => setShowModal(false), 3000); // Tutup modal setelah 3 detik
+      setTimeout(() => setShowModal(false), 3000);
+      resetFormFields();
     }
+  };
+
+  /**
+   * Reset form fields after failure or success
+   */
+  const resetFormFields = () => {
+    setCurrentEmail('');
+    setNewEmail('');
+    setPassword('');
   };
 
   return (
     <div className={styles.container}>
-      {/* SidebarSeller di sebelah kiri */}
       <SidebarSeller />
-      
-      {/* Konten utama di sebelah kanan */}
+
       <div className={styles.mainContent}>
         <h1>Change Email</h1>
         <form onSubmit={handleChangeEmail} className={styles.form}>
           <div className={styles.inputGroup}>
-            <label>Current Email</label>
+            <label htmlFor="currentEmail">Current Email</label>
             <input
               type="email"
+              id="currentEmail"
               value={currentEmail}
               placeholder="Enter current email"
               onChange={(e) => setCurrentEmail(e.target.value)}
@@ -63,9 +90,10 @@ const ChangeSellerEmail = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label>New Email</label>
+            <label htmlFor="newEmail">New Email</label>
             <input
               type="email"
+              id="newEmail"
               value={newEmail}
               placeholder="Enter new email"
               onChange={(e) => setNewEmail(e.target.value)}
@@ -73,9 +101,10 @@ const ChangeSellerEmail = () => {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
+              id="password"
               value={password}
               placeholder="Enter password for verification"
               onChange={(e) => setPassword(e.target.value)}
@@ -85,10 +114,9 @@ const ChangeSellerEmail = () => {
           <button type="submit" disabled={loading} className={styles.button}>
             {loading ? 'Changing...' : 'Change Email'}
           </button>
-          {error && <p className={styles.errorMessage}>{error}</p>}
         </form>
 
-        {/* Modal Notifikasi */}
+        {/* Notification Modal */}
         {showModal && (
           <Modal
             title={modalTitle}

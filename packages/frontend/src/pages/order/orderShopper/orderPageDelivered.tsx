@@ -1,89 +1,113 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrderItems, confirmOrderReceipt } from '../../../features/order/shopper/ordersShopperSlice'; // Import confirmOrderReceipt
-import { RootState } from '../../../app/store'; // Import tipe RootState
-import Sidebar from '../../../components/sidebar/sidebar_shopper'; // Import komponen Sidebar
-import OrderNavbar from '../../../components/navbar_footer/OrderShopperNavbar'; // Import OrderNavbar
-import ConfirmationModal from '../../../components/modal/modal_confirmation'; // Import ConfirmationModal
-import Modal from '../../../components/modal/modal_notification'; // Import Modal notifikasi
-import styles from './style/OrderPageDelivered.module.css'; // Import CSS module
+import { fetchOrderItems, confirmOrderReceipt } from '../../../features/order/shopper/ordersShopperSlice';
+import { RootState } from '../../../app/store'; // 
+import Sidebar from '../../../components/sidebar/sidebar_shopper';
+import OrderNavbar from '../../../components/navbar_footer/OrderShopperNavbar';
+import ConfirmationModal from '../../../components/modal/modal_confirmation';
+import Modal from '../../../components/modal/modal_notification';
+import styles from './style/OrderPageDelivered.module.css';
+import Footer from '../../../components/navbar_footer/footer';
 
+/**
+ * This is the delivered orders page for the shopper.
+ *
+ * It fetches the delivered orders for the shopper from the API and renders them in a list.
+ *
+ * The page is accessible only if the user is logged in as a shopper.
+ * If the user is not logged in, they will be redirected to the login page.
+ *
+ * The page is responsive and will adapt to different screen sizes.
+ */
 const DeliveredOrderPage = () => {
   const dispatch = useDispatch();
 
-  // Ambil data pesanan dari state Redux
+  // Get order data from Redux state
   const { orderItems, loading, error } = useSelector((state: RootState) => state.ordersShopper);
 
-  // State untuk modal konfirmasi
+  // State for confirmation modal
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
-  // State untuk modal notifikasi
+  // State for notification modal
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
-  // Panggil thunk untuk memuat pesanan ketika halaman pertama kali di-render
+  // Fetch orders when the page is first rendered
   useEffect(() => {
     dispatch(fetchOrderItems());
   }, [dispatch]);
 
-  // Filter pesanan yang status pengirimannya "Delivered"
+  // Filter orders with "Delivered" shipping status
   const deliveredOrders = orderItems.filter(
     (order) => order.shippingStatus === 'Delivered'
   );
 
-  // Fungsi untuk menangani konfirmasi pesanan
+  /**
+   * Handle confirm button click event.
+   * 
+   * This function is used when the user clicks on the "Confirm" button for an order.
+   * It sets the selected order ID to the argument and shows the confirmation modal.
+   * 
+   * @param orderId The ID of the order to be confirmed.
+   */
   const handleConfirm = (orderId: number) => {
-    setSelectedOrderId(orderId); // Simpan orderId yang dipilih
-    setShowConfirmationModal(true); // Tampilkan modal konfirmasi
+    setSelectedOrderId(orderId);
+    setShowConfirmationModal(true);
   };
 
-  // Fungsi untuk mengonfirmasi tindakan
+  /**
+   * Handle confirmation of an order.
+   * 
+   * This function is used to confirm an order when the user clicks on the "Confirm" button.
+   * It calls the confirmOrderReceipt thunk to confirm the order and shows a notification
+   * whether the confirmation is successful or not.
+   */
   const confirmAction = async () => {
     if (selectedOrderId !== null) {
-      // Panggil confirmOrderReceipt thunk untuk mengonfirmasi pesanan
+      // Call confirmOrderReceipt thunk to confirm the order
       const result = await dispatch(confirmOrderReceipt({ orderId: selectedOrderId }));
       if (confirmOrderReceipt.fulfilled.match(result)) {
         setNotificationMessage('Order confirmed successfully!');
       } else {
-        setNotificationMessage('Failed to confirm the order, please try again.');
+        setNotificationMessage(result.payload as string || 'Failed to confirm the order, please try again.');
       }
 
-      setShowConfirmationModal(false); // Tutup modal konfirmasi
-      setShowNotification(true); // Tampilkan modal notifikasi
+      setShowConfirmationModal(false);
+      setShowNotification(true);
 
       setTimeout(() => {
-        setShowNotification(false); // Sembunyikan notifikasi setelah 2 detik
-        dispatch(fetchOrderItems()); // Refresh data pesanan setelah tindakan
+        setShowNotification(false);
+        dispatch(fetchOrderItems());
       }, 2000);
     }
   };
 
   return (
     <div className={styles.container}>
-      <Sidebar /> {/* Sidebar tetap di samping kiri */}
+      <Sidebar /> {/* Sidebar remains on the left */}
+      <OrderNavbar /> {/* Navbar for all types of orders */}
       <div className={styles.mainContent}>
-        <OrderNavbar /> {/* Navbar untuk semua jenis pesanan */}
 
         <h1>Delivered Orders</h1>
 
-        {/* Tampilkan pesan loading jika data sedang dimuat */}
+        {/* Show loading message if data is being fetched */}
         {loading && <p>Loading orders...</p>}
 
-        {/* Tampilkan pesan error jika terjadi kesalahan */}
+        {/* Show error message if there's an error */}
         {error && <p>Error: {error}</p>}
 
-        {/* Jika semua data pesanan kosong */}
+        {/* Show message if order list is empty */}
         {orderItems.length === 0 && !loading && !error && (
           <p>Your order is empty.</p>
         )}
 
-        {/* Jika tidak ada pesanan yang delivered */}
+        {/* Show message if there are no delivered orders */}
         {deliveredOrders.length === 0 && orderItems.length > 0 && (
           <p>No delivered orders available.</p>
         )}
 
-        {/* Tampilkan daftar pesanan yang delivered jika ada */}
+        {/* Display list of delivered orders if available */}
         {deliveredOrders.length > 0 && (
           <div className={styles.orderList}>
             {deliveredOrders.map((order) => (
@@ -97,38 +121,56 @@ const DeliveredOrderPage = () => {
                 </div>
                 <div className={styles.orderDetails}>
                   <h2>{order.product.productName}</h2>
-                  <p>Total Amount: ${order.totalAmount}</p>
-                  <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                  <p>Shipping Status: {order.shippingStatus}</p>
-                </div>
-                <div className={styles.buttonGroup}>
-                  <button
-                    className={styles.confirmButton}
-                    onClick={() => handleConfirm(order.id)}
-                  >
-                    Confirm
-                  </button>
+                  <table className={styles.orderTable}>
+                    <tbody>
+                      <tr>
+                        <td><strong>Total Amount</strong></td>
+                        <td>:</td>
+                        <td>${order.totalAmount}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Order Date</strong></td>
+                        <td>:</td>
+                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Shipping Status</strong></td>
+                        <td>:</td>
+                        <td>{order.shippingStatus}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div className={styles.buttonGroup}>
+                    <button
+                      className={styles.confirmButton}
+                      onClick={() => handleConfirm(order.id)}
+                    >
+                      Confirm
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Modal Konfirmasi */}
+        {/* Confirmation Modal */}
         <ConfirmationModal
           show={showConfirmationModal}
           message="Are you sure you want to confirm this order?"
-          onConfirm={confirmAction} // Lanjutkan tindakan jika pengguna mengonfirmasi
-          onClose={() => setShowConfirmationModal(false)} // Tutup modal konfirmasi
+          onConfirm={confirmAction}
+          onClose={() => setShowConfirmationModal(false)}
         />
 
-        {/* Modal Notifikasi */}
+        {/* Notification Modal */}
         <Modal
           message={notificationMessage}
           show={showNotification}
-          onClose={() => setShowNotification(false)} // Tutup notifikasi jika diperlukan
+          onClose={() => setShowNotification(false)}
         />
       </div>
+
+      <Footer /> {/* Add Footer at the bottom */}
     </div>
   );
 };

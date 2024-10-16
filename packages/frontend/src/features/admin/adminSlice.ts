@@ -1,13 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
-
-// Define interfaces for seller, shopper, and state
+/**
+ * Interfaces for admin feature
+ *
+ * This file contains the interfaces for the admin feature. It defines the
+ * interfaces for the seller, shopper, and state.
+ *
+ * The interfaces are used to type-check the data that is received from the
+ * API and to define the shape of the state in the Redux store.
+ */
 interface Seller {
   id: number;
   name: string;
   storeName: string;
   phoneNumber: string;
   email: string;
+  active: boolean;
 }
 
 interface Shopper {
@@ -17,6 +25,7 @@ interface Shopper {
   phoneNumber: string;
   address: string;
   email: string;
+  active: boolean;
 }
 
 interface AdminState {
@@ -36,7 +45,13 @@ const initialState: AdminState = {
   successMessage: null,
 };
 
-// Fetch sellers
+/**
+ * Fetch sellers
+ *
+ * This async thunk is used to fetch the list of all sellers from the API.
+ *
+ * @returns The list of sellers.
+ */
 export const fetchSellers = createAsyncThunk<Seller[], void, { rejectValue: string }>(
   'admin/fetchSellers',
   async (_, { rejectWithValue }) => {
@@ -50,7 +65,13 @@ export const fetchSellers = createAsyncThunk<Seller[], void, { rejectValue: stri
   }
 );
 
-// Fetch shoppers
+/**
+ * Fetch shoppers
+ *
+ * This async thunk is used to fetch the list of all shoppers from the API.
+ *
+ * @returns The list of shoppers.
+ */
 export const fetchShoppers = createAsyncThunk<Shopper[], void, { rejectValue: string }>(
   'admin/fetchShoppers',
   async (_, { rejectWithValue }) => {
@@ -64,7 +85,14 @@ export const fetchShoppers = createAsyncThunk<Shopper[], void, { rejectValue: st
   }
 );
 
-// Deactivate user
+/**
+ * Deactivate user
+ *
+ * This async thunk is used to deactivate a user with the given email from the API.
+ *
+ * @param {string} email - The email of the user to deactivate.
+ * @returns The response from the API.
+ */
 export const deactivateUser = createAsyncThunk<void, { email: string }, { rejectValue: string }>(
   'admin/deactivateUser',
   async ({ email }, { rejectWithValue }) => {
@@ -78,7 +106,14 @@ export const deactivateUser = createAsyncThunk<void, { email: string }, { reject
   }
 );
 
-// Activate user
+/**
+ * Activate user
+ *
+ * This async thunk is used to activate a user with the given email from the API.
+ *
+ * @param {string} email - The email of the user to activate.
+ * @returns The response from the API.
+ */
 export const activateUser = createAsyncThunk<void, { email: string }, { rejectValue: string }>(
   'admin/activateUser',
   async ({ email }, { rejectWithValue }) => {
@@ -92,7 +127,14 @@ export const activateUser = createAsyncThunk<void, { email: string }, { rejectVa
   }
 );
 
-// Delete user menggunakan email
+/**
+ * Delete user
+ *
+ * This async thunk is used to delete a user with the given email and type from the API.
+ *
+ * @param {{ email: string; userType: 'seller' | 'shopper' }} data - The data for the deletion. It should contain the email and type of the user to delete.
+ * @returns The response from the API.
+ */
 export const deleteUser = createAsyncThunk<void, { email: string; userType: 'seller' | 'shopper' }, { rejectValue: string }>(
   'admin/deleteUser',
   async ({ email, userType }, { rejectWithValue }) => {
@@ -114,12 +156,12 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     resetState(state) {
-      localStorage.removeItem('token'); // Hapus token dari localStorage
-      sessionStorage.removeItem('token'); // Hapus token dari sessionStorage
-      localStorage.removeItem('user'); // Hapus user dari localStorage
-      sessionStorage.removeItem('user'); // Hapus user dari sessionStorage
-      // Reset state ke initialState
-      return initialState;
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
+      state.sellers = null;
+      state.shoppers = null;
     },
   },
   extraReducers: (builder) => {

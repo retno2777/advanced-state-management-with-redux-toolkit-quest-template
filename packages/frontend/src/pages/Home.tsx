@@ -1,26 +1,32 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import Footer from '../components/navbar_footer/footer';
-import Navbar_home from '../components/navbar_footer/navbar-home'; // Import Navbar yang sudah dipisahkan
-import styles from '../pages/styles/Home.module.css'; // Import CSS Modules
-import { getLimitedProducts } from '../features/product/productSlice'; // Import getLimitedProducts thunk
+import Navbar_home from '../components/navbar_footer/Navbar-home';
+import styles from '../pages/styles/Home.module.css'; 
+import { getLimitedProducts } from '../features/product/productSlice'; 
 import { RootState } from '../app/store';
 
+/**
+ * The Home component displays the hero section, features section and footer.
+ */
 const Home = () => {
   const dispatch = useDispatch();
 
-  // Ambil produk terbatas dari state
+  /**
+   * Get the products from the store.
+   */
   const { products, loading, error } = useSelector((state: RootState) => state.products);
 
-  // Fetch produk terbatas saat komponen dimount
+  /**
+   * Fetch the limited products when the component mounts.
+   */
   useEffect(() => {
     dispatch(getLimitedProducts());
   }, [dispatch]);
 
   return (
     <div className={styles.container}>
-      {/* Menggunakan Navbar yang dipisahkan */}
+      {/* Navbar */}
       <Navbar_home />
 
       {/* Hero Section */}
@@ -34,6 +40,7 @@ const Home = () => {
           {error && <p>Error loading products: {error}</p>}
           {products.length > 0 && (
             <div className={styles.heroProducts}>
+              {/* Display the first 3 products */}
               {products.slice(0, 3).map(product => (
                 <div key={product.id} className={styles.heroProductItem}>
                   <img
@@ -41,7 +48,7 @@ const Home = () => {
                     alt={product.productName}
                     className={styles.heroProductImage}
                   />
-                  <p>{product.productName}</p>
+                  <p className={styles.productName}>{product.productName}</p>
                 </div>
               ))}
             </div>
@@ -73,5 +80,7 @@ const Home = () => {
     </div>
   );
 };
+
+
 
 export default Home;

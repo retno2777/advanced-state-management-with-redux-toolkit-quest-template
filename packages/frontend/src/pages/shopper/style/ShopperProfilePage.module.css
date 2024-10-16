@@ -1,111 +1,153 @@
+/*
+ * ShopperProfilePage.module.css
+ * This is the CSS for the ShopperProfilePage.
+ * It contains the styles for the page, including the container, main content, and the table.
+ */
 .container {
     display: flex;
+    justify-content: center;
     min-height: 100vh;
+    margin-left: 12%;
 }
 
 .mainContent {
     flex: 1;
-    padding: 20px;
+    padding: 40px;
     margin: 0 auto;
-    width: 60%;
-    max-width: 60%;
+    max-width: 80%;
     text-align: center;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 30px;
 }
 
 .profileCard {
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 0 auto;
-    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 20px auto;
     text-align: left;
-    width: 50%;
+    width: 100%;
+    max-width: 600px;
+    max-height: 600px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profileCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .cardHeader {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
 }
 
 .profileImage {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    margin-right: 20px;
+    border: 3px solid #ddd;
 }
 
 .headerText {
-    flex-grow: 1;
+    margin-left: 5px;
 }
 
-.activeBadge {
-    background-color: #4caf50;
-    color: white;
+h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.activeBadge,
+.notActiveBadge {
+    margin-left: 5px;
+    margin-top: 5px;
     padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+
+.activeBadge {
+    background-color: #28a745;
+    color: white;
 }
 
 .notActiveBadge {
     background-color: #e74c3c;
     color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.8rem;
 }
 
 .profileTable {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 25px;
     border-collapse: collapse;
 }
 
 .profileTable td {
-    padding: 8px 10px;
+    padding: 12px 15px;
     vertical-align: top;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .profileTable td:first-child {
-    width: 30%;
+    width: 35%;
     font-weight: bold;
+    color: #333;
 }
 
 .profileTable td:nth-child(2) {
     width: 5%;
     text-align: center;
+    color: #777;
 }
 
 .profileTable td:nth-child(3) {
-    width: 65%;
+    width: 60%;
+    color: #555;
 }
 
 .actions {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    width: 50%;
-    margin: 0 auto;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .updateButton,
 .deleteButton,
 .changeButton {
-    padding: 10px 20px;
+    padding: 12px 20px;
     border: none;
     border-radius: 5px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin:0.5rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.updateButton:hover,
+.deleteButton:hover,
+.changeButton:hover {
+    transform: translateY(-2px);
 }
 
 .updateButton {
-    background-color: #4caf50;
+    background-color: #28a745;
     color: white;
 }
 
 .updateButton:hover {
-    background-color: #45a049;
+    background-color: #218838;
 }
 
 .deleteButton {
@@ -118,11 +160,28 @@
 }
 
 .changeButton {
-    background-color: #0069d9;
+    background-color: #007bff;
     color: white;
-    transition: background-color 0.3s ease;
 }
 
 .changeButton:hover {
-    background-color: #004085;
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mainContent {
+        width: 100%;
+        max-width: 95%;
+        padding: 20px;
+    }
+
+    .profileCard {
+        width: 100%;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
 }

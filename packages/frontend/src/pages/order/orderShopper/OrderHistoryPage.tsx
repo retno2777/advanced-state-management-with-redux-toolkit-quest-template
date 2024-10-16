@@ -1,65 +1,95 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrderHistory } from '../../../features/order/shopper/ordersShopperSlice'; // Import thunk untuk mengambil riwayat pesanan
-import { RootState } from '../../../app/store'; // Import tipe RootState
-import Sidebar from '../../../components/sidebar/sidebar_shopper'; // Import komponen Sidebar
-import OrderNavbar from '../../../components/navbar_footer/OrderShopperNavbar'; // Import OrderNavbar
-import styles from './style/OrderHistoryPage.module.css'; // Import CSS module
+import { fetchOrderHistory } from '../../../features/order/shopper/ordersShopperSlice'; 
+import { RootState } from '../../../app/store'; 
+import Sidebar from '../../../components/sidebar/sidebar_shopper'; 
+import styles from './style/OrderHistoryPage.module.css';
+import Footer from '../../../components/navbar_footer/footer'; 
 
+/**
+ * The OrderHistoryPage component displays a list of order history
+ * for the shopper to view.
+ * 
+ * The component fetches the list of orders from the Redux state and
+ * filters out only the order history. It then displays the list of
+ * order history in a table.
+ * 
+ * @returns The component rendering the list of order history.
+ */
 const OrderHistoryPage = () => {
   const dispatch = useDispatch();
 
-  // Ambil data riwayat pesanan dari state Redux
+  // Get order history data from Redux state
   const { orderHistory, loading, error } = useSelector((state: RootState) => state.ordersShopper);
 
-  // Panggil thunk untuk memuat riwayat pesanan ketika halaman pertama kali di-render
+  // Call thunk to load order history when the page first renders
   useEffect(() => {
     dispatch(fetchOrderHistory());
   }, [dispatch]);
 
   return (
     <div className={styles.container}>
-      <Sidebar /> {/* Sidebar tetap di samping kiri */}
+      <Sidebar /> {/* Sidebar remains on the left */}
       <div className={styles.mainContent}>
-        <OrderNavbar /> {/* Navbar untuk semua jenis pesanan */}
-
         <h1>Order History</h1>
 
-        {/* Tampilkan pesan loading jika data sedang dimuat */}
+        {/* Show loading message if data is being fetched */}
         {loading && <p>Loading order history...</p>}
-
-        {/* Tampilkan pesan error jika terjadi kesalahan */}
+        {/* Show error message if there is an error */}
         {error && <p>Error: {error}</p>}
-
-        {/* Jika semua data riwayat pesanan kosong */}
+        {/* Show message if order history is empty */}
         {orderHistory.length === 0 && !loading && !error && (
           <p>No order history available.</p>
         )}
 
-        {/* Tampilkan daftar riwayat pesanan jika ada */}
+        {/* Display list of order history if available */}
         {orderHistory.length > 0 && (
           <div className={styles.orderList}>
             {orderHistory.map((order) => (
               <div key={order.id} className={styles.orderCard}>
                 <div className={styles.imageWrapper}>
+                  {/* Display product image or a placeholder if none is available */}
                   <img
                     src={order.product.productImage || 'https://via.placeholder.com/50'}
-                    alt={order.productName}
+                    alt={order.product.productName}
                     className={styles.productImage}
                   />
                 </div>
                 <div className={styles.orderDetails}>
-                  <h2>{order.productName}</h2>
-                  <p>Total Amount: ${order.totalAmount}</p>
-                  <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                  <p>Shipping Status: {order.shippingStatus}</p>
-                  <p>Payment Status: {order.paymentStatus}</p>
+                  <h2>{order.product.productName}</h2>
+                  {/* Display order details in a table */}
+                  <table className={styles.orderTable}>
+                    <tbody>
+                      <tr>
+                        <td><strong>Total Amount</strong></td>
+                        <td>:</td>
+                        <td>${order.totalAmount}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Order Date</strong></td>
+                        <td>:</td>
+                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Shipping Status</strong></td>
+                        <td>:</td>
+                        <td>{order.shippingStatus}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Payment Status</strong></td>
+                        <td>:</td>
+                        <td>{order.paymentStatus}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <Footer /> {/* Add Footer at the bottom */}
     </div>
   );
 };

@@ -1,70 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate untuk navigasi
-import { changeSellerPassword } from '../../features/seller/sellerSlice'; // Import thunk untuk change password
-import { RootState } from '../app/store';
-import Modal from '../../components/modal/modal_notification'; // Import Modal Notifikasi
-import styles from './style/ChangeSellerPassword.module.css'; // Import CSS untuk styling
-import SidebarSeller from '../../components/sidebar/SidebarSeller'; // Import SidebarSeller
+import { useNavigate } from 'react-router-dom';
+import { changeSellerPassword } from '../../features/seller/sellerSlice';
+import { RootState } from '../../app/store';
+import Modal from '../../components/modal/modal_notification';
+import SidebarSeller from '../../components/sidebar/SidebarSeller';
+import styles from './style/ChangeSellerPassword.module.css';
 
-const ChangeSellerPassword = () => {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [modalTitle, setModalTitle] = useState(''); // State untuk judul modal
+/**
+ * This page is for seller to change their password.
+ * It will show a form that asks for current password and new password.
+ * After submitting the form, it will call the changeSellerPassword thunk from sellerSlice.
+ * If the thunk is successful, it will show a success modal and navigate to the home seller page.
+ * If the thunk fails, it will show an error modal.
+ */
+const ChangeSellerPassword: React.FC = () => {
+  const [oldPassword, setOldPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
+  const [modalTitle, setModalTitle] = useState<string>('');
 
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
-  const { loading, error } = useSelector((state: RootState) => state.seller);
+  const navigate = useNavigate();
+  const { loading } = useSelector((state: RootState) => state.seller);
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const result = await dispatch(changeSellerPassword({ oldPassword, newPassword }));
 
-    // Check if password change was successful
     if (changeSellerPassword.fulfilled.match(result)) {
       setModalTitle('Success');
       setModalMessage('Password changed successfully!');
       setShowModal(true);
+
       setTimeout(() => {
         setShowModal(false);
         navigate('/home-seller');
-         // Navigasi ke halaman home seller setelah berhasil
-      }, 2000); // Navigasi setelah 3 detik
-      
+      }, 2000);
     } else {
       setModalTitle('Error');
-      setModalMessage(error || 'Failed to change password');
+      setModalMessage(result.payload as string || 'Failed to change password. Please try again.');
       setShowModal(true);
-      setOldPassword(''); // Reset old password field
-      setNewPassword(''); // Reset new password field
-      setTimeout(() => setShowModal(false), 3000); // Tutup modal setelah 3 detik
+      setTimeout(() => setShowModal(false), 3000);
+      setOldPassword('');
+      setNewPassword('');
     }
   };
 
   return (
     <div className={styles.container}>
-      {/* SidebarSeller di sebelah kiri */}
-      <SidebarSeller />
-      
-      {/* Konten utama di sebelah kanan */}
+      <SidebarSeller /> {/* Sidebar on the left */}
+
       <div className={styles.mainContent}>
         <h1>Change Password</h1>
         <form onSubmit={handleChangePassword} className={styles.form}>
           <div className={styles.inputGroup}>
-            <label>Old Password</label>
+            <label htmlFor="oldPassword">Old Password</label>
             <input
               type="password"
+              id="oldPassword"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
               required
             />
           </div>
           <div className={styles.inputGroup}>
-            <label>New Password</label>
+            <label htmlFor="newPassword">New Password</label>
             <input
               type="password"
+              id="newPassword"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
@@ -73,13 +79,12 @@ const ChangeSellerPassword = () => {
           <button type="submit" disabled={loading} className={styles.button}>
             {loading ? 'Changing...' : 'Change Password'}
           </button>
-          {error && <p className={styles.errorMessage}>{error}</p>}
         </form>
 
-        {/* Modal Notifikasi */}
+        {/* Notification Modal */}
         {showModal && (
           <Modal
-            title={modalTitle} // Menampilkan judul modal
+            title={modalTitle}
             message={modalMessage}
             show={showModal}
             onClose={() => setShowModal(false)}

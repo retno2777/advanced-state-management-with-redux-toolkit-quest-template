@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSellerOrders, updateShippingStatus } from '../../../features/order/seller/ordersSellerSlice'; // Thunk for fetching and updating orders
-import { RootState } from '../../../app/store'; // Import RootState
-import Sidebar from '../../../components/sidebar/SidebarSeller'; // Sidebar for seller
-import OrderSellerNavbar from '../../../components/navbar_footer/OrderSellerNavbar'; // Import the new seller navbar
-import ConfirmationModal from '../../../components/modal/modal_confirmation'; // Import modal for confirmation
-import Modal from '../../../components/modal/modal_notification'; // Import modal for notification
-import styles from './style/SellerPaidOrdersPage.module.css'; // CSS module for page styling
+import { fetchSellerOrders, updateShippingStatus } from '../../../features/order/seller/ordersSellerSlice';
+import { RootState } from '../../../app/store';
+import Sidebar from '../../../components/sidebar/SidebarSeller';
+import OrderSellerNavbar from '../../../components/navbar_footer/OrderSellerNavbar';
+import ConfirmationModal from '../../../components/modal/modal_confirmation';
+import Modal from '../../../components/modal/modal_notification';
+import styles from './style/SellerPaidOrdersPage.module.css';
+import Footer from '../../../components/navbar_footer/footer';
 
+/**
+ * This is the paid orders page for the seller.
+ *
+ * It shows a list of paid orders, which is fetched from the API using the `fetchSellerOrders` action.
+ * The list is filtered to only show orders that have a payment status of "Paid" and a shipping status that is not "Refund Requested".
+ *
+ * The page shows a confirmation modal when the user tries to update the shipping status of an order.
+ * The modal asks the user to confirm the action and shows a notification message if the update is successful.
+ */
 const SellerPaidOrdersPage = () => {
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
@@ -15,88 +25,95 @@ const SellerPaidOrdersPage = () => {
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
     const [showNotificationModal, setShowNotificationModal] = useState(false);
 
-    // Get seller orders from the Redux state
     const { sellerOrders, loading, error } = useSelector((state: RootState) => state.ordersSeller);
 
-    // Fetch seller orders when the page loads
     useEffect(() => {
-        dispatch(fetchSellerOrders()); // Fetch all seller orders
+        /**
+         * Fetch the seller orders when the component mounts.
+         */
+        dispatch(fetchSellerOrders());
     }, [dispatch]);
 
-    // Filter orders that are paid
     const paidOrders = sellerOrders.filter(
-        (order) => order.orderItem.paymentStatus === 'Paid'
+        (order) => order.orderItem.paymentStatus === 'Paid' && order.shippingStatus !== 'Refund Requested'
     );
 
-    // Function to handle showing the confirmation modal for "Shipped"
     const handleShowModal = (orderId: number) => {
+        /**
+         * Set the selected order ID and show the confirmation modal.
+         */
         setSelectedOrderId(orderId);
         setShowModal(true);
     };
 
-    // Function to handle showing the confirmation modal for "Delivered"
     const handleShowDeliverModal = (orderId: number) => {
+        /**
+         * Set the selected order ID and show the confirmation modal.
+         */
         setSelectedOrderId(orderId);
         setShowDeliverModal(true);
     };
 
-    // Function to handle confirming the shipping status update to "Shipped"
     const handleConfirmUpdateShippingStatus = () => {
+        /**
+         * Confirm the update and hide the modal.
+         * If the update is successful, show a notification message.
+         */
         if (selectedOrderId) {
             dispatch(updateShippingStatus({ orderId: selectedOrderId, shippingStatus: 'Shipped' }));
             setShowModal(false);
             setShowNotificationModal(true);
-
-            // Hide notification modal after 2 seconds and reload page
             setTimeout(() => {
                 setShowNotificationModal(false);
-                dispatch(fetchSellerOrders());  // Refresh the page after 2 seconds
+                dispatch(fetchSellerOrders());
             }, 2000);
         }
     };
 
-    // Function to handle confirming the shipping status update to "Delivered"
     const handleConfirmUpdateDeliverStatus = () => {
+        /**
+         * Confirm the update and hide the modal.
+         * If the update is successful, show a notification message.
+         */
         if (selectedOrderId) {
             dispatch(updateShippingStatus({ orderId: selectedOrderId, shippingStatus: 'Delivered' }));
             setShowDeliverModal(false);
             setShowNotificationModal(true);
-
-            // Hide notification modal after 2 seconds and reload page
             setTimeout(() => {
                 setShowNotificationModal(false);
-                window.location.reload();  // Refresh the page after 2 seconds
+                window.location.reload();
             }, 2000);
         }
     };
 
-    // Function to close the modal
     const handleCloseModal = () => {
+        /**
+         * Hide the confirmation modal.
+         */
         setShowModal(false);
     };
 
-    // Function to close the deliver modal
     const handleCloseDeliverModal = () => {
+        /**
+         * Hide the confirmation modal.
+         */
         setShowDeliverModal(false);
     };
 
     return (
         <div className={styles.container}>
-            <Sidebar /> {/* Sidebar for seller */}
+            <Sidebar />
+            <OrderSellerNavbar />
             <div className={styles.mainContent}>
-                <OrderSellerNavbar /> {/* Navbar for seller's orders */}
 
                 <h1>Paid Orders</h1>
-
-                {/* Show loading message if data is being loaded */}
                 {loading && <p>Loading orders...</p>}
+                {error && <p>Error: {error}</p>}
 
-                {/* Show information message if there are no paid orders */}
                 {!loading && paidOrders.length === 0 && (
                     <p>No paid orders available.</p>
                 )}
 
-                {/* Display list of paid orders if available */}
                 {paidOrders.length > 0 && (
                     <div className={styles.orderList}>
                         {paidOrders.map((order) => (
@@ -110,12 +127,30 @@ const SellerPaidOrdersPage = () => {
                                 </div>
                                 <div className={styles.orderDetails}>
                                     <h2>{order.orderItem.product?.productName}</h2>
-                                    <p>Total Amount: ${order.totalAmount}</p>
-                                    <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                                    <p>Payment Status: {order.orderItem.paymentStatus}</p>
-                                    <p>Shipping Status: {order.shippingStatus}</p>
-
-                                    {/* Buttons to update shipping status */}
+                                    <table className={styles.orderTable}>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Total Amount</strong></td>
+                                                <td>:</td>
+                                                <td>${order.totalAmount}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Order Date</strong></td>
+                                                <td>:</td>
+                                                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Payment Status</strong></td>
+                                                <td>:</td>
+                                                <td>{order.orderItem.paymentStatus}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Shipping Status</strong></td>
+                                                <td>:</td>
+                                                <td>{order.shippingStatus}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     <div className={styles.buttonGroup}>
                                         <button
                                             onClick={() => handleShowModal(order.id)}
@@ -123,7 +158,6 @@ const SellerPaidOrdersPage = () => {
                                         >
                                             Mark as Shipped
                                         </button>
-
                                         <button
                                             onClick={() => handleShowDeliverModal(order.id)}
                                             className={styles.updateDeliverButton}
@@ -137,7 +171,6 @@ const SellerPaidOrdersPage = () => {
                     </div>
                 )}
 
-                {/* Confirmation Modal for Shipped */}
                 <ConfirmationModal
                     show={showModal}
                     message="Are you sure you want to mark this order as shipped?"
@@ -145,7 +178,6 @@ const SellerPaidOrdersPage = () => {
                     onClose={handleCloseModal}
                 />
 
-                {/* Confirmation Modal for Delivered */}
                 <ConfirmationModal
                     show={showDeliverModal}
                     message="Are you sure you want to mark this order as delivered?"
@@ -153,15 +185,16 @@ const SellerPaidOrdersPage = () => {
                     onClose={handleCloseDeliverModal}
                 />
 
-                {/* Notification Modal */}
                 <Modal
                     show={showNotificationModal}
                     message="Shipping status updated successfully!"
-                    onClose={() => setShowNotificationModal(false)}  // The modal will auto-close after 2 seconds, but this is required by the Modal component
+                    onClose={() => setShowNotificationModal(false)}
                 />
             </div>
+            <Footer />
         </div>
     );
 };
+
 
 export default SellerPaidOrdersPage;

@@ -1,3 +1,11 @@
+/**
+ * This file contains the type definition for the shopper order state and order items.
+ *
+ * The definitions include the type for the order item and order history.
+ * The order item type contains the id, product id, order date, quantity, total amount, shipping status, payment status, and product details.
+ * The order history type contains the id, order date, quantity, total amount, shipping status, payment status, delivery date, seller name, store name, product name, product price, product description, and product id.
+ */
+
 // Order item interface
 export interface OrderItem {
     id: number;
@@ -11,8 +19,7 @@ export interface OrderItem {
         id: number;
         productName: string;
         price: number;
-        productImage: string | null; // Tetap menyimpan productImage
-        // Hapus pictureFormat
+        productImage: string | null;
     };
 }
 
@@ -31,8 +38,7 @@ export interface OrderHistoryItem {
     productPrice: number;
     productDescription: string;
     productId: number;
-    productImage: string | null; // Tetap menyimpan productImage
-    // Hapus pictureFormat
+    productImage: string | null;
 }
 
 

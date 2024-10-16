@@ -1,86 +1,95 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSellerOrders, processRefundAction } from '../../../features/order/seller/ordersSellerSlice'; // Import actions
-import { RootState } from '../../../app/store'; // Import RootState
-import Sidebar from '../../../components/sidebar/SidebarSeller'; // Sidebar for seller
-import OrderSellerNavbar from '../../../components/navbar_footer/OrderSellerNavbar'; // Import the new seller navbar
-import ConfirmationModal from '../../../components/modal/modal_confirmation'; // Import modal for confirmation
-import Modal from '../../../components/modal/modal_notification'; // Import modal for notification
-import styles from './style/SellerRefundRequestsPage.module.css'; // CSS module for page styling
+import { fetchSellerOrders, processRefundAction } from '../../../features/order/seller/ordersSellerSlice';
+import { RootState } from '../../../app/store';
+import Sidebar from '../../../components/sidebar/SidebarSeller';
+import OrderSellerNavbar from '../../../components/navbar_footer/OrderSellerNavbar';
+import ConfirmationModal from '../../../components/modal/modal_confirmation';
+import Modal from '../../../components/modal/modal_notification';
+import styles from './style/SellerRefundRequestsPage.module.css';
+import Footer from '../../../components/navbar_footer/footer';
 
+/**
+ * RefundRequestsPage
+ * This page shows all refund requests from the seller perspective.
+ * The seller can approve or reject the refund requests.
+ */
 const RefundRequestsPage = () => {
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
     const [selectedAction, setSelectedAction] = useState<'approve' | 'reject' | null>(null);
     const [showNotificationModal, setShowNotificationModal] = useState(false);
-    const [notificationMessage, setNotificationMessage] = useState(''); // To store success or error message
+    const [notificationMessage, setNotificationMessage] = useState('');
 
-    // Get seller orders from the Redux state
-    const { sellerOrders, loading, error } = useSelector((state: RootState) => state.ordersSeller);
-
-    // Fetch seller orders when the page loads
+    /**
+     * Fetches the seller orders when the page is first rendered.
+     */
     useEffect(() => {
-        dispatch(fetchSellerOrders()); // Fetch all seller orders including refund requests
+        dispatch(fetchSellerOrders());
     }, [dispatch]);
 
-    // Filter orders that have refund requests
-    const refundRequests = sellerOrders.filter(
-        (order) => order.shippingStatus === 'Refund Requested'
-    );
+    const { sellerOrders, loading } = useSelector((state: RootState) => state.ordersSeller);
 
-    // Function to handle showing the confirmation modal for refund actions
+    /**
+     * Filters the orders to show only refund requests.
+     */
+    const refundRequests = sellerOrders.filter((order) => order.shippingStatus === 'Refund Requested');
+
+    /**
+     * Shows the confirmation modal with the selected order and action.
+     * @param {number} orderId The id of the order.
+     * @param {'approve' | 'reject'} action The action to perform.
+     */
     const handleShowModal = (orderId: number, action: 'approve' | 'reject') => {
         setSelectedOrderId(orderId);
         setSelectedAction(action);
         setShowModal(true);
     };
 
-    // Function to handle confirming refund action
+    /**
+     * Processes the refund action when the user confirms the action.
+     */
     const handleConfirmRefundAction = async () => {
         if (selectedOrderId && selectedAction) {
             const result = await dispatch(processRefundAction({ orderId: selectedOrderId, action: selectedAction }));
             if (processRefundAction.fulfilled.match(result)) {
-                // Success case
                 setNotificationMessage(`Refund ${selectedAction}d successfully!`);
                 setShowNotificationModal(true);
 
-                // Hide notification modal after 2 seconds and reload page
                 setTimeout(() => {
                     setShowNotificationModal(false);
-                    dispatch(fetchSellerOrders());  // Refresh the page after 2 seconds
+                    dispatch(fetchSellerOrders());
                 }, 2000);
             } else {
-                // Failure case: Display error message
-                setNotificationMessage('Failed to process refund, please try again.');
-                setShowNotificationModal(true); // Show error notification
+                setNotificationMessage(result.payload as string || 'Failed to process refund, please try again.');
+                setShowNotificationModal(true);
             }
-            setShowModal(false); // Close the modal after confirmation
+            setShowModal(false);
         }
     };
 
-    // Function to close the modal
+    /**
+     * Closes the confirmation modal.
+     */
     const handleCloseModal = () => {
         setShowModal(false);
     };
 
     return (
         <div className={styles.container}>
-            <Sidebar /> {/* Sidebar for seller */}
+            <Sidebar />
+            <OrderSellerNavbar />
             <div className={styles.mainContent}>
-                <OrderSellerNavbar /> {/* Navbar for seller's orders */}
 
                 <h1>Refund Requests</h1>
 
-                {/* Show loading message if data is being loaded */}
                 {loading && <p>Loading refund requests...</p>}
 
-                {/* Show information message if there are no refund requests */}
                 {!loading && refundRequests.length === 0 && (
                     <p>No refund requests available.</p>
                 )}
 
-                {/* Display list of refund requests if available */}
                 {refundRequests.length > 0 && (
                     <div className={styles.orderList}>
                         {refundRequests.map((order) => (
@@ -94,11 +103,25 @@ const RefundRequestsPage = () => {
                                 </div>
                                 <div className={styles.orderDetails}>
                                     <h2>{order.orderItem.product?.productName}</h2>
-                                    <p>Total Amount: ${order.totalAmount}</p>
-                                    <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                                    <p>Shipping Status: {order.shippingStatus}</p>
-
-                                    {/* Buttons to approve or reject refund */}
+                                    <table className={styles.orderTable}>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Total Amount</strong></td>
+                                                <td>:</td>
+                                                <td>${order.totalAmount}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Order Date</strong></td>
+                                                <td>:</td>
+                                                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Shipping Status</strong></td>
+                                                <td>:</td>
+                                                <td>{order.shippingStatus}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     <div className={styles.buttonGroup}>
                                         <button
                                             onClick={() => handleShowModal(order.id, 'approve')}
@@ -106,7 +129,6 @@ const RefundRequestsPage = () => {
                                         >
                                             Approve Refund
                                         </button>
-
                                         <button
                                             onClick={() => handleShowModal(order.id, 'reject')}
                                             className={styles.rejectButton}
@@ -120,7 +142,6 @@ const RefundRequestsPage = () => {
                     </div>
                 )}
 
-                {/* Confirmation Modal for Refund Action */}
                 <ConfirmationModal
                     show={showModal}
                     message={`Are you sure you want to ${selectedAction} this refund request?`}
@@ -128,13 +149,14 @@ const RefundRequestsPage = () => {
                     onClose={handleCloseModal}
                 />
 
-                {/* Notification Modal */}
                 <Modal
                     show={showNotificationModal}
-                    message={notificationMessage} // Show success or failure message
-                    onClose={() => setShowNotificationModal(false)}  // The modal will auto-close after 2 seconds
+                    message={notificationMessage}
+                    onClose={() => setShowNotificationModal(false)}
                 />
             </div>
+
+            <Footer />
         </div>
     );
 };

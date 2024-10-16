@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../services/api'; // Adjust the path to your API service
-import { CartItem, CartState } from './type'; // Import types
+import api from '../../services/api';
+import { CartItem, CartState } from './type';
 
 // Initial state for the cart
 const initialState: CartState = {
@@ -9,7 +9,18 @@ const initialState: CartState = {
   error: null,
 };
 
-// Async thunk for adding a product to the cart
+/**
+ * Async thunk for adding an item to the cart
+ *
+ * This thunk is used to add an item to the cart. It will handle the request
+ * and response for the add item action.
+ *
+ * @param {Object} data - The data for the add item. It should contain the
+ *                        product ID and the quantity.
+ * @param {{rejectValue: string}} thunkAPI - The thunk API.
+ * @returns {Promise<CartItem>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const addItemToCart = createAsyncThunk<CartItem, { productId: number; quantity: number }, { rejectValue: string }>(
   'cart/addItemToCart',
   async ({ productId, quantity }, { rejectWithValue }) => {
@@ -22,8 +33,18 @@ export const addItemToCart = createAsyncThunk<CartItem, { productId: number; qua
     }
   }
 );
-
-// Async thunk for reducing the quantity of an item in the cart
+/**
+ * Async thunk for increasing an item in the cart
+ *
+ * This thunk is used to increase an item in the cart. It will handle the request
+ * and response for the increase item action.
+ *
+ * @param {{productId: number}} data - The data for the increase item. It should contain the
+ *                                      product ID.
+ * @param {{rejectValue: string}} thunkAPI - The thunk API.
+ * @returns {Promise<CartItem>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const reduceItemInCart = createAsyncThunk<CartItem, { productId: number }, { rejectValue: string }>(
   'cart/reduceItemInCart',
   async ({ productId }, { rejectWithValue }) => {
@@ -37,7 +58,18 @@ export const reduceItemInCart = createAsyncThunk<CartItem, { productId: number }
   }
 );
 
-// Async thunk for removing an item from the cart
+/**
+ * Async thunk for removing an item from the cart
+ *
+ * This thunk is used to remove an item from the cart. It will handle the request
+ * and response for the remove item action.
+ *
+ * @param {{productId: number}} data - The data for the remove item. It should contain the
+ *                                      product ID.
+ * @param {{rejectValue: string}} thunkAPI - The thunk API.
+ * @returns {Promise<{productId: number}>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const removeItemFromCart = createAsyncThunk<{ productId: number }, { productId: number }, { rejectValue: string }>(
   'cart/removeItemFromCart',
   async ({ productId }, { rejectWithValue }) => {
@@ -51,7 +83,17 @@ export const removeItemFromCart = createAsyncThunk<{ productId: number }, { prod
   }
 );
 
-// Async thunk for viewing the cart
+/**
+ * Async thunk for viewing the cart
+ *
+ * This thunk is used to view the cart. It will handle the request
+ * and response for the view cart action.
+ *
+ * @param {{}} data - No data is required for this thunk.
+ * @param {{rejectValue: string}} thunkAPI - The thunk API.
+ * @returns {Promise<CartItem[]>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const viewCart = createAsyncThunk<CartItem[], void, { rejectValue: string }>(
   'cart/viewCart',
   async (_, { rejectWithValue }) => {
@@ -65,8 +107,19 @@ export const viewCart = createAsyncThunk<CartItem[], void, { rejectValue: string
   }
 );
 
-// Async thunk for checking out selected items
-// Thunk untuk checkout
+/**
+ * Async thunk for checking out selected items in the cart
+ *
+ * This thunk is used to checkout selected items in the cart. It will handle the request
+ * and response for the checkout action. The request body should contain either productIds
+ * or singleProductId and singleProductQuantity.
+ *
+ * @param {{productIds: number[], singleProductId?: number, singleProductQuantity?: number}} data - The data for the checkout.
+ *                                  It should contain either productIds or singleProductId and singleProductQuantity.
+ * @param {{rejectValue: string}} thunkAPI - The thunk API.
+ * @returns {Promise<{message: string}>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const checkoutSelectedItems = createAsyncThunk<
   { message: string },
   { productIds: number[], singleProductId?: number, singleProductQuantity?: number },
@@ -75,24 +128,18 @@ export const checkoutSelectedItems = createAsyncThunk<
   'cart/checkoutSelectedItems',
   async ({ productIds, singleProductId, singleProductQuantity }, { rejectWithValue }) => {
     try {
-      // Buat body request tergantung apakah ada productIds atau singleProductId
       const requestBody = productIds.length > 0
-        ? { productIds } // Jika ada productIds, checkout dari keranjang
-        : { singleProductId, singleProductQuantity }; // Jika tidak, checkout langsung satu produk
-
-      // Panggil API untuk checkout
+        ? { productIds }
+        : { singleProductId, singleProductQuantity };
       const response = await api.post('shopper/checkout', requestBody);
-
-      return response.data; // Berhasil checkout, return response
+      return response.data;
     } catch (error: any) {
-      // Handle error dari server
       const errorMessage = error.response?.data?.message || error.message || 'Failed to checkout selected items';
       return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Cart slice
 const cartSlice = createSlice({
   name: 'cart',
   initialState,

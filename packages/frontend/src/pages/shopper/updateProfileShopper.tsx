@@ -1,59 +1,84 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateShopperProfile } from '../../features/shopper/shopperSlice'; // Import thunk untuk update profil shopper
-import Modal from '../../components/modal/modal_notification'; // Import modal notifikasi
+import { updateShopperProfile } from '../../features/shopper/shopperSlice';
+import Modal from '../../components/modal/modal_notification';
 import { RootState } from '../../app/store';
-import styles from './style/UpdateProfileShopper.module.css'; // Import CSS Module untuk styling
-import SidebarShopper from '../../components/sidebar/sidebar_shopper'; // Import Sidebar Shopper
+import styles from './style/UpdateProfileShopper.module.css';
+import SidebarShopper from '../../components/sidebar/sidebar_shopper';
 
+/**
+ * UpdateShopperProfilePage
+ *
+ * This component renders the update profile page for a shopper.
+ * It retrieves the shopper's profile data from the Redux state and
+ * allows the shopper to update their first name, last name, address,
+ * phone number, birthday, and profile picture.
+ *
+ * @returns {JSX.Element} The component's JSX element.
+ */
 const UpdateShopperProfilePage = () => {
   const dispatch = useDispatch();
 
-  // Ambil data profil dari Redux state
+  // Get profile data from Redux state
   const { shopper } = useSelector((state: RootState) => state.shopper);
   const [firstName, setFirstName] = useState(shopper?.firstName || '');
   const [lastName, setLastName] = useState(shopper?.lastName || '');
   const [address, setAddress] = useState(shopper?.address || '');
   const [phoneNumber, setPhoneNumber] = useState(shopper?.phoneNumber || '');
-  const [birthday, setBirthday] = useState(shopper?.birthDay || ''); // State untuk birthday
-  const [profilePicture, setProfilePicture] = useState<File | null>(null); // Handle file gambar
-  const [showModal, setShowModal] = useState(false); // Modal notification state
+  const [birthday, setBirthday] = useState(shopper?.birthDay || '');
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
 
-  // Fungsi untuk meng-handle perubahan file gambar
+  /**
+   * Handle profile picture upload
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e The change event
+   */
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setProfilePicture(e.target.files[0]);
     }
   };
 
-  // Fungsi untuk meng-handle submit
+  /**
+   * Handle form submission
+   *
+   * @param {React.FormEvent} e The form event
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append('firstName', firstName);
     formData.append('lastName', lastName);
-    formData.append('birthDay', birthday); // Kirimkan tanggal lahir yang diperbarui
+    formData.append('birthDay', birthday);
     formData.append('address', address);
     formData.append('phoneNumber', phoneNumber);
     if (profilePicture) {
-      formData.append('profilePicture', profilePicture); // Pastikan gambar dikirim dengan nama 'profilePicture'
+      formData.append('profilePicture', profilePicture);
     }
 
     try {
+      // Dispatch the update profile action
       const result = await dispatch(updateShopperProfile(formData));
       if (updateShopperProfile.fulfilled.match(result)) {
+        setModalTitle('Success');
         setModalMessage('Profile updated successfully!');
       } else {
-        setModalMessage('Failed to update profile.');
+        setModalTitle('Error');
+        setModalMessage(result.payload as string || 'Failed to update profile.');
       }
-    } catch (err) {
+    } catch {
+      // Handle error and display the modal with an error message
+      setModalTitle('Error');
       setModalMessage('An error occurred during the update process.');
     } finally {
-      setShowModal(true); // Tampilkan modal setelah submit
+      // Show modal and hide it after 3 seconds
+      setShowModal(true);
       setTimeout(() => {
-        setShowModal(false); // Otomatis tutup modal setelah 3 detik
+        setShowModal(false);
       }, 3000);
     }
   };
@@ -101,31 +126,34 @@ const UpdateShopperProfilePage = () => {
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Birthday</label> {/* Input untuk Birthday */}
+            <label>Birthday</label>
             <input
               type="date"
-              value={birthday} // Menampilkan value birthday
-              onChange={(e) => setBirthday(e.target.value)} // Mengubah value birthday
+              value={birthday}
+              onChange={(e) => setBirthday(e.target.value)}
               required
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Profile Picture</label> {/* Input untuk upload gambar */}
+            <label>Profile Picture</label>
             <input
               type="file"
               accept="image/*"
-              onChange={handleImageChange} // Handle perubahan file gambar
+              onChange={handleImageChange}
             />
           </div>
           <button type="submit" className={styles.submitButton}>Update Profile</button>
         </form>
 
-        {/* Modal untuk notifikasi, hanya tampil jika showModal true */}
-        <Modal
-          message={modalMessage}
-          show={showModal}
-          onClose={() => setShowModal(false)}
-        />
+        {/* Modal for notification */}
+        {showModal && (
+          <Modal
+            title={modalTitle}
+            message={modalMessage}
+            show={showModal}
+            onClose={() => setShowModal(false)}
+          />
+        )}
       </div>
     </div>
   );

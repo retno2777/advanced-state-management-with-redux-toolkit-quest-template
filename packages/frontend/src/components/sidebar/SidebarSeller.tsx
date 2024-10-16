@@ -1,30 +1,42 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../features/auth/authSlice'; // Import action logout dari authSlice
-import { resetProfile } from '../../features/seller/sellerSlice'; // Import action resetProfile dari sellerSlice
-import { resetProductState } from '../../features/product/productSlice'; // Import action resetProductState dari productSlice
+import { logout } from '../../features/auth/authSlice';
+import { resetProfile } from '../../features/seller/sellerSlice';
+import { resetProductState } from '../../features/product/productSlice';
 import { resetOrderState } from '../../features/order/seller/ordersSellerSlice';
-import styles from '../style/SidebarSeller.module.css'; // Buat style module khusus untuk Sidebar Seller
+import styles from '../style/SidebarSeller.module.css';
 
+/**
+ * The navigation bar component for the seller
+ * 
+ * This component renders a navigation bar with links to the seller's profile, orders, order history, and products
+ * 
+ * @returns A JSX element representing the navigation bar
+ */
 const SidebarSeller = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Fungsi untuk menangani logout
+
+  /**
+   * Handles the logout process
+   * 
+   * Dispatches the logout action, resets the seller's profile, product state, and order state, and navigates to the home page
+   */
   const handleLogout = () => {
-    dispatch(logout()); // Panggil action logout dari auth slice
-    dispatch(resetProfile()); // Panggil action resetProfile dari seller slice
-    dispatch(resetProductState()); // Panggil action resetProductState dari product slice
+    dispatch(logout());
+    dispatch(resetProfile());
+    dispatch(resetProductState());
     dispatch(resetOrderState());
-    navigate('/'); // Redirect ke halaman home atau login setelah logout
+    navigate('/');
   };
 
   return (
     <div className={styles.sidebar}>
       <ul>
         <li>
-          <Link to="/home-seller">Profile</Link> {/* Opsi Profile di bagian paling atas */}
+          <Link to="/home-seller">Profile</Link>
         </li>
         <li>
           <Link to="/seller/orders/pending">Orders</Link>
@@ -38,7 +50,7 @@ const SidebarSeller = () => {
       </ul>
       <button className={styles.logoutButton} onClick={handleLogout}>
         Logout
-      </button> 
+      </button>
     </div>
   );
 };

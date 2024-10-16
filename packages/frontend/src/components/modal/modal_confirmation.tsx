@@ -1,16 +1,22 @@
 import React from 'react';
-import styles from '../style/ConfirmationModal.module.css'; // Pastikan Anda membuat file CSS untuk modal ini
+import styles from '../style/ConfirmationModal.module.css';
 
+/**
+ * A modal that asks the user to confirm an action.
+ * It shows a message and has two buttons: "Confirm" and "Cancel".
+ * The "Confirm" button will call the onConfirm function when clicked.
+ * The "Cancel" button will call the onClose function when clicked.
+ */
 interface ConfirmationModalProps {
   show: boolean;
   message: string;
-  onConfirm: () => void; // Fungsi yang dipanggil saat pengguna mengklik "Yes"
-  onClose: () => void; // Fungsi yang dipanggil saat pengguna mengklik "No"
+  onConfirm: () => void;
+  onClose: () => void;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ show, message, onConfirm, onClose }) => {
   if (!show) {
-    return null; // Jika show false, tidak tampilkan modal
+    return null;
   }
 
   return (

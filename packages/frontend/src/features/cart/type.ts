@@ -1,3 +1,6 @@
+/**
+ * This file contains the type definition for the cart state and cart items.
+ */
 export interface CartItem {
   productId: number;
   quantity: number;
@@ -5,7 +8,6 @@ export interface CartItem {
   price?: number;
   productImage?: string;
 }
-
 export interface CartState {
   cartItems: CartItem[];
   loading: boolean;

@@ -1,23 +1,31 @@
-// components/navbar/Navbar.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../style/Navbar-home.module.css'; // Import CSS module khusus untuk Navbar
+import styles from '../style/Navbar-home.module.css';
 
+/**
+ * The main navigation bar component for the home page
+ * 
+ * @returns a JSX element representing the navigation bar
+ */
 const Navbar_home = () => {
   return (
     <nav className={styles.navbar}>
       <ul className={styles.navLinks}>
         <li>
-          <Link to="/">Home</Link> {/* Link untuk Home */}
+          <Link to="/">Home</Link>
+          {/* Link to the home page */}
         </li>
         <li>
-          <Link to="/">About Us</Link> {/* Link untuk About Us */}
+          <Link to="/">About Us</Link>
+          {/* Link to the about us page */}
         </li>
         <li>
-          <Link to="/login">Login</Link> {/* Link untuk Login */}
+          <Link to="/login">Login</Link>
+          {/* Link to the login page */}
         </li>
         <li>
-          <Link to="/register-shopper">Register</Link> {/* Link untuk shopper */}
+          <Link to="/register-shopper">Register</Link>
+          {/* Link to the register page for shoppers */}
         </li>
       </ul>
     </nav>

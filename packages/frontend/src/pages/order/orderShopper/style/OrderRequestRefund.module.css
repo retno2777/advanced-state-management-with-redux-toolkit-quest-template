@@ -1,95 +1,97 @@
+/*
+ * OrderRequestRefund.module.css
+ * This is the CSS for the OrderRequestRefund page.
+ * It contains the styles for the page, including the container, main content, and the list of orders.
+ */
 .container {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    background-color: #f1f3f5;
+    margin-left: 12%;
 }
 
 .mainContent {
     flex: 1;
     padding: 20px;
-    background-color: #ffffff;
-    margin-left: 12%;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
 }
 
-h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-/* Mengatur grid menjadi 5 kolom */
 .orderList {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 kolom */
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
+    margin-top: 20px;
 }
 
-/* Gaya untuk setiap kartu pesanan */
 .orderCard {
-    display: flex;
-    flex-direction: column; /* Menampilkan konten secara vertikal */
-    background-color: #fff;
-    border: 1px solid #e3e6e8;
-    border-radius: 8px;
+    background-color: white;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: left; /* Teks rata kiri */
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
 }
 
-/* Wrapper untuk gambar produk */
 .imageWrapper {
-    text-align: center; /* Gambar berada di tengah */
-    margin-bottom: 15px; /* Jarak antara gambar dan detail */
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    margin-bottom: 15px;
 }
 
-/* Gambar produk */
 .productImage {
-    width: 100px; /* Ukuran gambar diperbesar */
-    height: 100px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-/* Gaya untuk detail pesanan */
 .orderDetails {
-    flex: 1;
-    text-align: left; /* Teks rata kiri */
+    margin-top: 10px;
 }
-
 .orderDetails h2 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-    color: #333;
+    text-align: center;
+}
+.orderTable {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
 }
 
-.orderDetails p {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 5px;
+.orderTable td {
+    padding: 8px;
+    vertical-align: top;
 }
 
-/* Responsif: Menurunkan jumlah kolom sesuai lebar layar */
+.orderTable td:first-child {
+    width: 40%;
+    font-weight: bold;
+}
+
+.orderTable td:nth-child(2) {
+    width: 5%;
+    text-align: center;
+}
+
+.orderTable td:nth-child(3) {
+    width: 55%;
+}
+
+/* Responsive Design */
 @media (max-width: 1200px) {
     .orderList {
-        grid-template-columns: repeat(4, 1fr); /* 4 kolom untuk layar sedang */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 992px) {
     .orderList {
-        grid-template-columns: repeat(3, 1fr); /* 3 kolom untuk layar lebih kecil */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .orderList {
-        grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk layar lebih kecil */
-    }
-}
-
-@media (max-width: 400px) {
-    .orderList {
-        grid-template-columns: 1fr; /* 1 kolom untuk layar sangat kecil */
+        grid-template-columns: 1fr;
     }
 }

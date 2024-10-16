@@ -1,4 +1,12 @@
-// Interface untuk Product
+/**
+ * This file contains the type definition for the product state and product item.
+ *
+ * The definitions include the type for the product item and product state.
+ * The product item type contains the id, product name, price, stock, description, expiry date, and product image.
+ * The product state type contains the message, loading, error, products, and selected product.
+ */
+
+// Interface for Product
 export interface Product {
   id: number;
   productName: string;
@@ -9,20 +17,21 @@ export interface Product {
   productImage: string | null;
 }
 
-// Interface untuk response dari getProducts
+// Interface for response dari getProducts
 export interface ProductResponse {
   products: Product[];
 }
 
-// Interface untuk ProductState di Redux store
+// Interface for ProductState di Redux store
 export interface ProductState {
   message: string;
   loading: boolean;
   error: string | null;
-  products: Product[]; // Daftar produk
-  selectedProduct: Product | null; // Produk yang dipilih untuk update
+  products: Product[];
+  selectedProduct: Product | null;
 }
-// Interface untuk Create Product Response
+
+// Interface for Create Product Response
 export interface CreateProductResponse {
   message: string;
 }

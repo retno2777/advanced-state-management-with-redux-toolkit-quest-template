@@ -1,33 +1,44 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSellerOrders } from '../../../features/order/seller/ordersSellerSlice'; // Thunk for fetching seller's orders
-import { RootState } from '../../../app/store'; // Import RootState
-import Sidebar from '../../../components/sidebar/SidebarSeller'; // Sidebar for seller
-import OrderSellerNavbar from '../../../components/navbar_footer/OrderSellerNavbar'; // Import the new seller navbar
-import styles from './style/SellerPendingOrdersPage.module.css'; // CSS module for page styling
+import { fetchSellerOrders } from '../../../features/order/seller/ordersSellerSlice'; 
+import { RootState } from '../../../app/store'; 
+import Sidebar from '../../../components/sidebar/SidebarSeller'; 
+import OrderSellerNavbar from '../../../components/navbar_footer/OrderSellerNavbar'; 
+import styles from './style/SellerPendingOrdersPage.module.css'; 
+import Footer from '../../../components/navbar_footer/footer';
 
+
+/**
+ * The SellerPendingOrdersPage component displays a list of pending orders
+ * for the seller to manage.
+ * 
+ * The component fetches the list of orders from the Redux state and
+ * filters out only the pending orders. It then displays the list of
+ * pending orders in a table.
+ * 
+ * @returns The component rendering the list of pending orders.
+ */
 const SellerPendingOrdersPage = () => {
   const dispatch = useDispatch();
 
   // Get seller orders from the Redux state
   const { sellerOrders, loading, error } = useSelector((state: RootState) => state.ordersSeller);
 
-  // Fetch seller orders when the page loads
-  useEffect(() => {
-    dispatch(fetchSellerOrders()); // Fetch all seller orders
-  }, [dispatch]);
-
-  // Filter orders that are pending
+  // Fetch only the pending orders
   const pendingOrders = sellerOrders.filter(
     (order) => order.orderItem.paymentStatus === 'Pending'
   );
 
+  useEffect(() => {
+    dispatch(fetchSellerOrders()); // Fetch all seller orders
+  }, [dispatch]);
+
   return (
     <div className={styles.container}>
       <Sidebar /> {/* Sidebar for seller */}
+      <OrderSellerNavbar /> {/* Navbar for seller's orders */}
       <div className={styles.mainContent}>
-        <OrderSellerNavbar /> {/* Navbar for seller's orders */}
-
+      
         <h1>Pending Orders</h1>
 
         {/* Show loading message if data is being loaded */}
@@ -55,15 +66,34 @@ const SellerPendingOrdersPage = () => {
                 </div>
                 <div className={styles.orderDetails}>
                   <h2>{order.orderItem.product?.productName}</h2>
-                  <p>Total Amount: ${order.totalAmount}</p>
-                  <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                  <p>Payment Status: {order.orderItem.paymentStatus}</p>
+                  {/* 3-column table for order details */}
+                  <table className={styles.orderTable}>
+                    <tbody>
+                      <tr>
+                        <td><strong>Total Amount</strong></td>
+                        <td>:</td>
+                        <td>${order.totalAmount}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Order Date</strong></td>
+                        <td>:</td>
+                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Payment Status</strong></td>
+                        <td>:</td>
+                        <td>{order.orderItem.paymentStatus}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <Footer /> {/* Add the Footer at the bottom */}
     </div>
   );
 };

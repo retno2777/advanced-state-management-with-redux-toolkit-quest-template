@@ -1,20 +1,26 @@
-import {CartModel} from "../../../models/CartModel.js";
-import {ProductModel} from "../../../models/ProductModel.js";
-import {ShopperModel} from "../../../models/ShopperModel.js";
+import { CartModel } from "../../../models/CartModel.js";
+import { ProductModel } from "../../../models/ProductModel.js";
+import { ShopperModel } from "../../../models/ShopperModel.js";
 
-// Add a product to the cart
+/**
+ * Add a product to the cart
+ * @param {Object} req - Request object containing the request body
+ * @param {Object} res - Response object for sending the response
+ * @returns {Promise} - Resolves to a JSON response with a success message
+ */
 const addItemToCart = async (req, res) => {
     try {
-        const { productId, quantity } = req.body;  // Product and quantity to add
-        const userId = req.user.userId;  // Ambil userId dari token terverifikasi
-        // Lakukan pencarian sellerId berdasarkan userId
+        const { productId, quantity } = req.body;
+        const userId = req.user.userId;
+
+        // Find the shopper by userId
         const shopper = await ShopperModel.findOne({ where: { userId: userId } });
         if (!shopper) {
             return res.status(404).json({ message: "Seller not found" });
         }
         const shopperId = shopper.id;
-        console.log("Shopper ID:", shopperId);  // Cetak shopperId untuk debugging
-        // Check if the product exists in the database
+
+        // Find the product by productId
         const product = await ProductModel.findOne({ where: { id: productId } });
         if (!product) {
             return res.status(404).json({ message: "Product not found", ok: false });
@@ -25,7 +31,7 @@ const addItemToCart = async (req, res) => {
             return res.status(400).json({ message: "Insufficient stock", ok: false });
         }
 
-        // Check if the product is already in the cart
+        // Find the cart item by productId and shopperId
         const cartItem = await CartModel.findOne({ where: { productId, shopperId } });
         if (cartItem) {
             // If it's already in the cart, increase the quantity
@@ -47,13 +53,18 @@ const addItemToCart = async (req, res) => {
     }
 };
 
-// Reduce the quantity of an item in the cart by productId
+/**
+ * Reduce the quantity of an item in the cart by productId
+ * @param {Object} req - The request object containing user information.
+ * @param {Object} res - The response object for sending the response.
+ * @returns {Promise} - Resolves to a JSON response with either a confirmation or the updated cart item.
+ */
 const reduceItemInCart = async (req, res) => {
     try {
         const { productId } = req.body;
-        const userId = req.user.userId;  // Ambil userId dari token terverifikasi
+        const userId = req.user.userId;
 
-        // Lakukan pencarian sellerId berdasarkan userId
+        // Find the shopper by userId
         const shopper = await ShopperModel.findOne({ where: { userId: userId } });
         if (!shopper) {
             return res.status(404).json({ message: "Seller not found" });
@@ -86,17 +97,25 @@ const reduceItemInCart = async (req, res) => {
     }
 };
 
-// Function to remove an item after confirmation
+/**
+ * Function to remove an item from the cart after confirmation
+ * @param {Object} req - The request object containing user information.
+ * @param {Object} res - The response object for sending the response.
+ * @returns {Promise} - Resolves to a JSON response with a confirmation message.
+ */
 const removeItemFromCart = async (req, res) => {
     try {
+        // Retrieve the product ID from the request body
         const { productId } = req.body;
-        const userId = req.user.userId;  // Ambil userId dari token terverifikasi
+        // Retrieve the userId from the authenticated user's token
+        const userId = req.user.userId;
 
-        // Lakukan pencarian sellerId berdasarkan userId
+        // Find the shopper by userId
         const shopper = await ShopperModel.findOne({ where: { userId: userId } });
         if (!shopper) {
             return res.status(404).json({ message: "Seller not found" });
         }
+        // Retrieve the shopperId from the shopper object
         const shopperId = shopper.id;
 
         // Check if the product is in the cart before removing it
@@ -107,30 +126,39 @@ const removeItemFromCart = async (req, res) => {
 
         // Remove item from the cart
         await CartModel.destroy({ where: { productId, shopperId } });
+        // Return a successful response with a confirmation message
         return res.status(200).json({ message: "Product removed from cart", ok: true });
     } catch (error) {
         console.error(error);
+        // Return a server error response with a generic message
         return res.status(500).json({ message: "Server error", ok: false });
     }
 };
 
-// Function to view the contents of the cart
+/**
+ * Function to view the contents of the cart
+ * @param {Object} req - The request object containing user information.
+ * @param {Object} res - The response object for sending the response.
+ * @returns {Promise} - Resolves to a JSON response with the cart items.
+ */
 const viewCart = async (req, res) => {
     try {
-        const userId = req.user.userId;  // Ambil userId dari token terverifikasi
+        const userId = req.user.userId;
 
-        // Lakukan pencarian sellerId berdasarkan userId
+        // Retrieve the shopper's information from the authenticated user's token
         const shopper = await ShopperModel.findOne({ where: { userId: userId } });
         if (!shopper) {
             return res.status(404).json({ message: "Seller not found" });
         }
         const shopperId = shopper.id;
+
         // Retrieve all items in the cart owned by the shopper
+        // Include product information using an inner join
         const cartItems = await CartModel.findAll({
             where: { shopperId },
             include: [
                 {
-                    model: ProductModel,  // Include product information
+                    model: ProductModel,  // Include product model
                     attributes: ['id', 'productName', 'price', 'productImage', 'pictureFormat']  // Retrieve necessary fields
                 }
             ]
@@ -152,9 +180,11 @@ const viewCart = async (req, res) => {
                 : null
         }));
 
+        // Return the list of cart items with the formatted image
         return res.status(200).json({ cartItems: formattedCartItems });
     } catch (error) {
         console.error(error);
+        // Return a server error response with a generic message
         return res.status(500).json({ message: "Server error", ok: false });
     }
 };

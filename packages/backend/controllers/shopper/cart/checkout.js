@@ -2,9 +2,16 @@ import { CartModel } from "../../../models/CartModel.js";
 import { OrderItemModel } from "../../../models/OrderItemModel.js";
 import { SellerOrderModel } from "../../../models/SellerOrderModel.js";
 import { ProductModel } from "../../../models/ProductModel.js";
-import { sequelizePharma as sequelize } from "../../../database/db.js"; // Impor sequelizePharma as sequelize
+import { sequelizePharma as sequelize } from "../../../database/db.js"; 
 import { ShopperModel } from "../../../models/ShopperModel.js";
-// Checkout function to move items from Cart to OrderItemModel and SellerOrderModel
+
+
+/**
+ * Checks out the selected items in the cart or directly from the product page
+ * @param {Object} req - The request object containing the list of productIds or single productId and quantity
+ * @param {Object} res - The response object for sending the response
+ * @returns {Promise} - Resolves to a JSON response with whether the checkout was successful or not
+ */
 const checkoutSelectedItems = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {

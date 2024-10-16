@@ -1,107 +1,103 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrderItems, simulatePayment, requestCancellationOrRefund } from '../../../features/order/shopper/ordersShopperSlice'; // Import thunks
-import { RootState } from '../../../app/store'; // Import tipe RootState
-import Sidebar from '../../../components/sidebar/sidebar_shopper'; // Import komponen Sidebar
-import OrderNavbar from '../../../components/navbar_footer/OrderShopperNavbar'; // Import OrderNavbar
-import ConfirmationModal from '../../../components/modal/modal_confirmation'; // Import ConfirmationModal
-import Modal from '../../../components/modal/modal_notification'; // Import Modal notifikasi
-import styles from './style/OrderPagePending.module.css'; // Import CSS module
+import { fetchOrderItems, simulatePayment, requestCancellationOrRefund } from '../../../features/order/shopper/ordersShopperSlice';
+import { RootState } from '../../../app/store';
+import Sidebar from '../../../components/sidebar/sidebar_shopper';
+import OrderNavbar from '../../../components/navbar_footer/OrderShopperNavbar';
+import ConfirmationModal from '../../../components/modal/modal_confirmation';
+import Modal from '../../../components/modal/modal_notification';
+import styles from './style/OrderPagePending.module.css';
+import Footer from '../../../components/navbar_footer/footer';
 
+/**
+ * The OrderPagePending component displays a list of pending orders
+ * for the shopper to manage.
+ *
+ * The component fetches the list of orders from the Redux state and
+ * filters out only the pending orders. It then displays the list of
+ * pending orders in a table.
+ *
+ * The page is accessible only if the user is logged in as a shopper.
+ * If the user is not logged in, they will be redirected to the login page.
+ *
+ * The page is responsive and will adapt to different screen sizes.
+ */
 const OrderPagePending = () => {
   const dispatch = useDispatch();
 
-  // Ambil data pesanan dari state Redux
   const { orderItems, loading, error } = useSelector((state: RootState) => state.ordersShopper);
 
-  // State untuk modal konfirmasi (pembayaran dan pembatalan)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
-  const [actionType, setActionType] = useState<'PAY' | 'CANCEL' | null>(null); // Tambahkan actionType untuk membedakan antara Pay dan Cancel
-
-  // State untuk modal notifikasi
+  const [actionType, setActionType] = useState<'PAY' | 'CANCEL' | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
-  // Panggil thunk untuk memuat pesanan ketika halaman pertama kali di-render
   useEffect(() => {
     dispatch(fetchOrderItems());
   }, [dispatch]);
 
-  // Filter pesanan yang status pembayarannya "Pending"
   const pendingOrders = orderItems.filter(
     (order) => order.paymentStatus === 'Pending' && order.shippingStatus !== 'Cancelled'
   );
 
-  // Fungsi untuk menangani pembayaran
   const handlePayNow = (orderId: number) => {
-    setSelectedOrderId(orderId); // Simpan orderId yang dipilih
-    setActionType('PAY'); // Set actionType menjadi 'PAY'
-    setShowConfirmationModal(true); // Tampilkan modal konfirmasi
+    setSelectedOrderId(orderId);
+    setActionType('PAY');
+    setShowConfirmationModal(true);
   };
 
-  // Fungsi untuk menangani pembatalan
   const handleCancel = (orderId: number) => {
-    setSelectedOrderId(orderId); // Simpan orderId yang dipilih
-    setActionType('CANCEL'); // Set actionType menjadi 'CANCEL'
-    setShowConfirmationModal(true); // Tampilkan modal konfirmasi
+    setSelectedOrderId(orderId);
+    setActionType('CANCEL');
+    setShowConfirmationModal(true);
   };
 
-  // Fungsi untuk mengonfirmasi tindakan (pembayaran atau pembatalan)
   const confirmAction = async () => {
     if (selectedOrderId !== null) {
       if (actionType === 'PAY') {
-        // Proses pembayaran
         const result = await dispatch(simulatePayment({ orderId: selectedOrderId }));
         if (simulatePayment.fulfilled.match(result)) {
           setNotificationMessage('Payment successful!');
         } else {
-          setNotificationMessage('Payment failed, please try again.');
+          setNotificationMessage(result.payload as string || 'Payment failed, please try again.');
         }
       } else if (actionType === 'CANCEL') {
-        // Proses pembatalan
         const result = await dispatch(requestCancellationOrRefund({ orderId: selectedOrderId }));
         if (requestCancellationOrRefund.fulfilled.match(result)) {
           setNotificationMessage('Order cancelled successfully!');
         } else {
-          setNotificationMessage('Cancellation failed, please try again.');
+          setNotificationMessage(result.payload as string || 'Cancellation failed, please try again.');
         }
       }
-
-      setShowConfirmationModal(false); // Tutup modal konfirmasi
-      setShowNotification(true); // Tampilkan modal notifikasi
+      setShowConfirmationModal(false);
+      setShowNotification(true);
       setTimeout(() => {
-        setShowNotification(false); // Sembunyikan notifikasi setelah 2 detik
-        dispatch(fetchOrderItems()); // Refresh data pesanan setelah tindakan
+        setShowNotification(false);
+        dispatch(fetchOrderItems());
       }, 2000);
     }
   };
 
   return (
     <div className={styles.container}>
-      <Sidebar /> {/* Sidebar tetap di samping kiri */}
+      <Sidebar />
+      <OrderNavbar />
       <div className={styles.mainContent}>
-        <OrderNavbar /> {/* Navbar untuk semua jenis pesanan */}
 
         <h1>Pending Orders</h1>
 
-        {/* Tampilkan pesan loading jika data sedang dimuat */}
         {loading && <p>Loading orders...</p>}
+        {error && <p className={styles.errorMessage}>Error: {error}</p>}
 
-        {/* Tampilkan pesan error jika terjadi kesalahan */}
-        {error && <p>Error: {error}</p>}
-
-        {/* Jika semua data pesanan kosong */}
         {orderItems.length === 0 && !loading && !error && (
-          <p>Your order is empty.</p>
+          <p>Your order list is empty.</p>
         )}
 
-        {/* Jika tidak ada pesanan yang pending */}
         {pendingOrders.length === 0 && orderItems.length > 0 && (
           <p>No pending orders available.</p>
         )}
 
-        {/* Tampilkan daftar pesanan yang pending jika ada */}
         {pendingOrders.length > 0 && (
           <div className={styles.orderList}>
             {pendingOrders.map((order) => (
@@ -115,9 +111,25 @@ const OrderPagePending = () => {
                 </div>
                 <div className={styles.orderDetails}>
                   <h2>{order.product.productName}</h2>
-                  <p>Total Amount: ${order.totalAmount}</p>
-                  <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                  <p>Shipping Status: {order.shippingStatus}</p>
+                  <table className={styles.orderTable}>
+                    <tbody>
+                      <tr>
+                        <td><strong>Total Amount</strong></td>
+                        <td>:</td>
+                        <td>${order.totalAmount}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Order Date</strong></td>
+                        <td>:</td>
+                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Shipping Status</strong></td>
+                        <td>:</td>
+                        <td>{order.shippingStatus}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
                 <div className={styles.buttonGroup}>
                   <button
@@ -138,21 +150,21 @@ const OrderPagePending = () => {
           </div>
         )}
 
-        {/* Modal Konfirmasi */}
         <ConfirmationModal
           show={showConfirmationModal}
           message={actionType === 'PAY' ? 'Are you sure you want to pay for this order?' : 'Are you sure you want to cancel this order?'}
-          onConfirm={confirmAction} // Lanjutkan tindakan jika pengguna mengonfirmasi
-          onClose={() => setShowConfirmationModal(false)} // Tutup modal konfirmasi
+          onConfirm={confirmAction}
+          onClose={() => setShowConfirmationModal(false)}
         />
 
-        {/* Modal Notifikasi */}
         <Modal
           message={notificationMessage}
           show={showNotification}
-          onClose={() => setShowNotification(false)} // Tutup notifikasi jika diperlukan
+          onClose={() => setShowNotification(false)}
         />
       </div>
+
+      <Footer />
     </div>
   );
 };

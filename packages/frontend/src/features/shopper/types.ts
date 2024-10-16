@@ -1,3 +1,9 @@
+/**
+ * This file contains the type definition for the shopper profile state.
+ *
+ * The type definition include the type for the shopper profile state.
+ * The shopper profile state is used to store the shopper's information.
+ */
 export interface ShopperProfile {
   id: number;
   firstName: string;
@@ -8,7 +14,7 @@ export interface ShopperProfile {
   profilePicture?: string;
   createdAt: string;
   updatedAt: string;
-  active: boolean; // Status active diambil dari state auth
+  active: boolean;
 }
 
 export interface ShopperState {
@@ -17,17 +23,15 @@ export interface ShopperState {
   error: string | null;
 }
 
-// Interface untuk request update profile shopper
 export interface UpdateShopperProfileRequest {
   name?: string;
   phoneNumber?: string;
   address?: string;
-  profilePicture?: string; // Opsional, jika pengguna memperbarui gambar profil
+  profilePicture?: string; 
 }
 
-// Interface untuk state Shopper dalam Redux store
 export interface ShopperState {
-  shopper: ShopperProfile | null; // Profil shopper, bisa null jika belum dimuat
-  loading: boolean; // Status loading untuk menampilkan spinner atau loading state
-  error: string | null; // Error message jika terjadi kesalahan
+  shopper: ShopperProfile | null; 
+  loading: boolean; 
+  error: string | null; 
 }

@@ -1,3 +1,8 @@
+/*
+ * RegisterShopper.module.css
+ * This is the CSS for the RegisterShopper page.
+ * It contains the styles for the page, including the outer container, container, and the form.
+ */
 .outerContainer {
   min-height: 100vh;
   width: 100%;
@@ -42,13 +47,13 @@
 .userDetails {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px; /* Memberikan jarak antar elemen */
+  gap: 15px;
 }
 
 .inputBox {
   flex: 1;
   width: 100%;
-  min-width: 48%; /* Membuat input lebih proporsional */
+  min-width: 48%;
   margin: 0.2rem;
 }
 
@@ -61,24 +66,20 @@
 }
 
 .inputBox input {
-  width: 90%;
+  width: 97%;
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ced4da;
   outline: none;
   font-size: 15px;
-  background-color: #f9f9f9;
+  background-color: #d6d6d6;
   transition: all 0.3s ease;
 }
-.inputBox input[type="text"] {
-  width: 90%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ced4da;
-  outline: none;
-  font-size: 15px;
-  background-color: #f9f9f9;
-  transition: all 0.3s ease;
+
+.inputBox input[type="text"],
+.inputBox input[type="password"],
+.inputBox input[type="date"] {
+  width: 100%;
 }
 
 
@@ -93,7 +94,7 @@
 
 .button input {
   height: 50px;
-  width: 100%;
+  width: 90%;
   border-radius: 6px;
   border: none;
   color: #fff;
@@ -103,6 +104,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   background: linear-gradient(135deg, #3d3743, #211e22);
+  margin: auto;
 }
 
 .button input:hover {

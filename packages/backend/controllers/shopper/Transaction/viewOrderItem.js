@@ -1,14 +1,25 @@
-import { OrderItemModel } from "../../../models/OrderItemModel.js";  // Import OrderItem model
-import { ProductModel } from "../../../models/ProductModel.js";      // Import Product model
-import { OrderHistoryModel } from "../../../models/OrderHistoryModel.js";  // Import OrderHistory model
+import { OrderItemModel } from "../../../models/OrderItemModel.js";  
+import { ProductModel } from "../../../models/ProductModel.js";     
+import { OrderHistoryModel } from "../../../models/OrderHistoryModel.js";  
 import { ShopperModel } from "../../../models/ShopperModel.js";
 import { SellerModel } from "../../../models/SellerModel.js";
-// Function to convert image buffer to Base64
+
+
+/**
+ * Converts an image buffer to a base64 string
+ * @param {Buffer} imageBuffer - The image buffer to convert
+ * @returns {String} - The base64 string representation of the image, or null if the imageBuffer is null or undefined
+ */
 const convertImageToBase64 = (imageBuffer) => {
     return imageBuffer ? imageBuffer.toString('base64') : null;
 };
 
-// Function to retrieve all order items for the logged-in shopper
+/**
+ * Function to retrieve all order items for the logged-in shopper.
+ * @param {Object} req - The request object containing user information.
+ * @param {Object} res - The response object for sending the response.
+ * @returns {Promise} - Resolves to a JSON response with order item details.
+ */
 const getOrderItems = async (req, res) => {
     try {
         const userId = req.user.userId;  // Retrieve userId from the authenticated user's token
@@ -25,8 +36,8 @@ const getOrderItems = async (req, res) => {
         // Retrieve all order items for that shopper without including the product
         const orderItems = await OrderItemModel.findAll({
             where: { shopperId },
-            attributes: ['id', 'productId', 'orderDate', 'quantity', 'totalAmount', 'shippingStatus', 'paymentStatus'],  // Include productId so we can find product manually
-            order: [['orderDate', 'DESC']]  // Sort by the latest order date
+            attributes: ['id', 'productId', 'orderDate', 'quantity', 'totalAmount', 'shippingStatus', 'paymentStatus'],  
+            order: [['orderDate', 'DESC']]  
         });
 
         if (!orderItems || orderItems.length === 0) {
@@ -43,7 +54,7 @@ const getOrderItems = async (req, res) => {
             if (!product) {
                 return {
                     ...item.toJSON(),
-                    product: null // No product found
+                    product: null
                 };
             }
 
@@ -124,9 +135,9 @@ const getOrderHistory = async (req, res) => {
                 ...item.toJSON(),
                 product: product ? {
                     ...product.toJSON(),
-                    productImage: productImage  // Include product image if available
+                    productImage: productImage  
                 } : null,
-                seller: seller ? seller.toJSON() : null,  // Include seller details if available
+                seller: seller ? seller.toJSON() : null,  
             };
         }));
 

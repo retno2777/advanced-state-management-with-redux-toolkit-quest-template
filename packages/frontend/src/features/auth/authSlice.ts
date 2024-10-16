@@ -7,15 +7,35 @@ import {
   RegisterResponse,
   UserResponse,
   AuthState
-} from './types'; // Mengimpor tipe dari types.ts
+} from './types';
 
-// Initial state untuk auth
+/**
+ * Auth feature slice
+ *
+ * This file contains the auth feature slice. It defines the initial state, reducers,
+ * and async thunks for the auth feature.
+ *
+ * The slice is used to manage the state of the user's authentication. It will store
+ * the user's information and the authentication token. It will also handle the
+ * registration of new users and the login of existing users.
+ *
+ * The async thunks are used to handle the communication with the API. They will
+ * handle the requests and responses for the registration and login actions.
+ *
+ * The reducers are used to update the state of the slice. They will handle the
+ * actions that are dispatched by the async thunks.
+ */
+
+
 const initialState: AuthState = {
   user: null,
   token: null,
+  error: null,  
 };
 
-// Async thunk untuk register seller
+/**
+ * Register a new seller
+ */
 export const registerSeller = createAsyncThunk<RegisterResponse, RegisterSellerRequest>(
   'auth/registerSeller',
   async (data, { rejectWithValue }) => {
@@ -28,7 +48,9 @@ export const registerSeller = createAsyncThunk<RegisterResponse, RegisterSellerR
   }
 );
 
-// Async thunk untuk register shopper
+/**
+ * Register a new shopper
+ */
 export const registerShopper = createAsyncThunk<RegisterResponse, RegisterShopperRequest>(
   'auth/registerShopper',
   async (data, { rejectWithValue }) => {
@@ -41,7 +63,9 @@ export const registerShopper = createAsyncThunk<RegisterResponse, RegisterShoppe
   }
 );
 
-// Async thunk untuk login
+/**
+ * Login with an existing user
+ */
 export const login = createAsyncThunk<UserResponse, LoginRequest>(
   'auth/login',
   async ({ email, password, rememberMe }, { rejectWithValue }) => {
@@ -54,16 +78,15 @@ export const login = createAsyncThunk<UserResponse, LoginRequest>(
         isActive: response.data.isActive
       };
 
-      // Simpan token dan data user di localStorage jika "Remember Me" dipilih, jika tidak, gunakan sessionStorage
       if (rememberMe) {
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user)); // Simpan user sebagai JSON
+        localStorage.setItem('user', JSON.stringify(user));
       } else {
         sessionStorage.setItem('token', token);
-        sessionStorage.setItem('user', JSON.stringify(user)); // Simpan user sebagai JSON
+        sessionStorage.setItem('user', JSON.stringify(user));
       }
 
-      return response.data;  // Kirim data user dan token ke store
+      return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -77,22 +100,22 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem('token'); // Hapus token dari localStorage
-      sessionStorage.removeItem('token'); // Hapus token dari sessionStorage
-      localStorage.removeItem('user'); // Hapus user dari localStorage
-      sessionStorage.removeItem('user'); // Hapus user dari sessionStorage
+      state.error = null;
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
     },
     setCredentials: (state, action) => {
       state.token = action.payload.token;
       state.user = action.payload.user;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
         const { userDetails, token, email, role, isActive } = action.payload;
-
-        // Menyimpan token, user ID, email, dan role ke dalam state Redux
         state.token = token;
         state.user = {
           id: userDetails.id,
@@ -106,18 +129,24 @@ export const authSlice = createSlice({
           address: userDetails.address,
           birthDay: userDetails.birthDay,
         };
+        state.error = null;
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(login.rejected, (state, action) => {
         state.user = null;
         state.token = null;
+        state.error = action.payload as string;  
       })
-      // Menangani hasil sukses dari register seller
       .addCase(registerSeller.fulfilled, (state, action) => {
-        // Jika diperlukan, tambahkan logika setelah register seller berhasil
+        state.error = null;
       })
-      // Menangani hasil sukses dari register shopper
+      .addCase(registerSeller.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
       .addCase(registerShopper.fulfilled, (state, action) => {
-        // Jika diperlukan, tambahkan logika setelah register shopper berhasil
+        state.error = null;
+      })
+      .addCase(registerShopper.rejected, (state, action) => {
+        state.error = action.payload as string;
       });
   },
 });

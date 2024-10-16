@@ -4,11 +4,15 @@ import dotenv from "dotenv";
 dotenv.config();
 const config = process.env;
 
-// Middleware to verify the token
+/**
+ * Middleware to verify the token
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const tokenVerification = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
-    // Cek apakah Authorization header ada dan dimulai dengan "Bearer "
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(403).send({
             ok: false,
@@ -17,21 +21,18 @@ const tokenVerification = async (req, res, next) => {
         });
     }
 
-    const token = authHeader.split(" ")[1]; // Ekstrak token dari header
+    const token = authHeader.split(" ")[1];
 
     try {
-        // Verifikasi token dan decode payload
         const decoded = jsonwebtoken.verify(token, config.TOKEN);
 
-        // Simpan informasi pengguna yang di-decode ke dalam req.user
         req.user = {
             userId: decoded.userId,
             email: decoded.email,
-            role: decoded.role, // Pastikan role juga diambil jika dibutuhkan
+            role: decoded.role,
             isActive: decoded.isActive
         };
 
-        // Lanjutkan ke middleware berikutnya
         next();
     } catch (error) {
         console.error("Failed to authenticate token:", error);

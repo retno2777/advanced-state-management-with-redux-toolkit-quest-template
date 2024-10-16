@@ -1,42 +1,54 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSellerOrderHistory } from '../../../features/order/seller/ordersSellerSlice'; // Import action untuk fetch order history
-import { RootState } from '../../../app/store'; // Import RootState
-import Sidebar from '../../../components/sidebar/SidebarSeller'; // Sidebar untuk seller
-import OrderSellerNavbar from '../../../components/navbar_footer/OrderSellerNavbar'; // Navbar untuk seller
-import styles from './style/SellerOrderHistoryPage.module.css'; // Import CSS module untuk styling halaman
+import { fetchSellerOrderHistory } from '../../../features/order/seller/ordersSellerSlice';
+import { RootState } from '../../../app/store';
+import Sidebar from '../../../components/sidebar/SidebarSeller';
+import styles from './style/SellerOrderHistoryPage.module.css';
+import Footer from '../../../components/navbar_footer/footer';
+
+/**
+ * This is the order history page for the seller.
+ *
+ * It fetches the order history for the seller from the API and renders it in a list.
+ *
+ * The page is accessible only if the user is logged in as a seller.
+ * If the user is not logged in, they will be redirected to the login page.
+ *
+ * The page is responsive and will adapt to different screen sizes.
+ */
 
 const OrderHistoryPage: React.FC = () => {
     const dispatch = useDispatch();
 
-    // Mengambil data order history dari state Redux
     const { orderHistory, loading, error } = useSelector((state: RootState) => state.ordersSeller);
 
-    // Panggil thunk untuk fetch order history saat page di-load
+    /**
+     * This function fetches the order history for the seller from the API and renders it in a list.
+     *
+     * The page is accessible only if the user is logged in as a seller.
+     * If the user is not logged in, they will be redirected to the login page.
+     *
+     * The page is responsive and will adapt to different screen sizes.
+     */
     useEffect(() => {
-        dispatch(fetchSellerOrderHistory()); // Memanggil action untuk mengambil data order history
+        dispatch(fetchSellerOrderHistory());
     }, [dispatch]);
 
     return (
         <div className={styles.container}>
-            <Sidebar /> {/* Sidebar untuk seller */}
+            <Sidebar />
             <div className={styles.mainContent}>
-                <OrderSellerNavbar /> {/* Navbar untuk seller */}
 
                 <h1>Order History</h1>
 
-                {/* Tampilkan loading saat data sedang dimuat */}
                 {loading && <p>Loading order history...</p>}
 
-                {/* Tampilkan pesan error jika ada masalah */}
                 {error && <p>Error: {error}</p>}
 
-                {/* Tampilkan pesan jika tidak ada order history */}
                 {!loading && orderHistory.length === 0 && (
                     <p>No order history available.</p>
                 )}
 
-                {/* Tampilkan daftar order history jika data tersedia */}
                 {orderHistory.length > 0 && (
                     <div className={styles.orderList}>
                         {orderHistory.map((order) => (
@@ -49,20 +61,45 @@ const OrderHistoryPage: React.FC = () => {
                                     />
                                 </div>
                                 <div className={styles.orderDetails}>
-                                    <h2>{order.productName}</h2>
-                                    <p>Total Amount: ${order.totalAmount}</p>
-                                    <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                                    <p>Payment Status: {order.paymentStatus}</p>
-                                    <p>Shipping Status: {order.shippingStatus}</p>
-                                    <p>Store: {order.storeName}</p>
-                                    <p>Seller: {order.sellerName}</p>
-                                    <p>Delivery Date: {order.deliveryDate ? new Date(order.deliveryDate).toLocaleDateString() : 'N/A'}</p>
+                                    <h2>{order.productDetails.name}</h2>
+
+                                    <table className={styles.orderTable}>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Total Amount</strong></td>
+                                                <td>:</td>
+                                                <td>${order.totalAmount}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Order Date</strong></td>
+                                                <td>:</td>
+                                                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Payment Status</strong></td>
+                                                <td>:</td>
+                                                <td>{order.paymentStatus}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Shipping Status</strong></td>
+                                                <td>:</td>
+                                                <td>{order.shippingStatus}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Shopper Name</strong></td>
+                                                <td>:</td>
+                                                <td>{order.shopperDetails.name}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
+
+            <Footer /> {/* Place the footer at the bottom */}
         </div>
     );
 };

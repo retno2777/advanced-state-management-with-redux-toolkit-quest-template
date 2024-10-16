@@ -1,17 +1,23 @@
+/*
+ * Footer.module.css
+ *
+ * This is the CSS for the footer of the whole website
+ *
+ */
 .footer {
   background-color: #2d3e50;
-  padding: 0;
+  padding: 0.5rem 0;
   color: white;
   width: 100%;
   max-width: 100%;
-  margin: 0 auto; /* Pusatkan footer di dalam container */
+  margin-top: auto;
 }
 
 .footerContent {
   display: flex;
-  flex-direction: column; /* Ubah menjadi kolom agar konten berurutan dari atas ke bawah */
+  flex-direction: column;
   justify-content: center;
-  align-items: center; /* Pusatkan konten secara horizontal */
+  align-items: center;
   max-width: 100%;
   margin: 0 auto;
 }
@@ -19,9 +25,8 @@
 .footerLinks {
   list-style: none;
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 0;
-  margin-top: 0.3rem;
 }
 
 .footerLinks a {
@@ -31,4 +36,9 @@
 
 .footerLinks a:hover {
   text-decoration: underline;
+}
+
+.footer p {
+  margin: 0.5rem 0;
+  font-size: 14px;
 }

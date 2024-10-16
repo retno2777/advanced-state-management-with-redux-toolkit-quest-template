@@ -1,4 +1,8 @@
-/* Navbar */
+/* 
+  Navbar-home.module.css
+  This is the CSS for the Navbar that is used in the Home page.
+  It contains the styles for the logo, navigation links, and the hover effect.
+*/
 .navbar {
   display: flex;
   justify-content: space-between;

@@ -1,17 +1,13 @@
 import { Router } from "express";
 import { tokenVerification, isActiveCheck, shopperAccess } from "../../security/authentication.js";
-import { uploadSingleFile } from "../../middleware/upload.js";  // Updated the import to use the correct middleware
-import { viewAllProducts } from "../../controllers/product/productControllers.js";  // Import product controllers
-
-// Import controllers for shopper profile
+import { uploadSingleFile } from "../../middleware/upload.js";  
+import { viewAllProducts } from "../../controllers/product/productControllers.js";  
 import { loadProfile, updateProfile, changePassword, deleteProfile, changeEmail } from "../../controllers/shopper/profile/shopperProfileContollers.js";
-
-// Import controllers for cart and order
 import { addItemToCart, reduceItemInCart, removeItemFromCart, viewCart } from "../../controllers/shopper/cart/cartControllers.js";
 import { checkoutSelectedItems } from "../../controllers/shopper/cart/checkout.js";
 import { getOrderItems, getOrderHistory } from '../../controllers/shopper/Transaction/viewOrderItem.js';
 import { requestCancellationOrRefund } from '../../controllers/shopper/Transaction/requestCancellationOrRefund.js';
-import { simulatePayment } from "../../controllers/shopper/Transaction/payment.js";  // Simulate payment
+import { simulatePayment } from "../../controllers/shopper/Transaction/payment.js"; 
 import { confirmOrderReceipt } from "../../controllers/shopper/Transaction/accepted.js";
 
 // Create a new router for shopper

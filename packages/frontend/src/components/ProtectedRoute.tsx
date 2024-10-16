@@ -2,37 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { RootState } from '../app/store';
-import Modal from '../components/modal/modal_notification'; // Import modal
-
+import Modal from '../components/modal/modal_notification';
+/**
+ * ProtectedRoute component
+ * This component is used to protect routes based on user roles
+ * When user is not logged in or user role is not allowed, it will redirect to login page
+ * and show a modal notification
+ */
 interface ProtectedRouteProps {
   children: JSX.Element;
-  allowedRoles: string[];  // Role yang diizinkan
+  allowedRoles: string[];
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
-  const { token, user } = useSelector((state: RootState) => state.auth); // Mengambil token dan user dari auth state
-  const [showModal, setShowModal] = useState(false); // State untuk menampilkan modal
-  const [redirect, setRedirect] = useState(false); // State untuk redirect setelah modal tampil
+  const { token, user } = useSelector((state: RootState) => state.auth);
+  const [showModal, setShowModal] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    const userRole = user?.role || ''; // Ambil role dari user jika ada
+    const userRole = user?.role || '';
     if (!token || !allowedRoles.includes(userRole)) {
-      setShowModal(true); // Tampilkan modal ketika tidak diizinkan mengakses halaman
+      setShowModal(true);
 
-      // Setelah 3 detik, sembunyikan modal dan redirect ke halaman login
+
       const timer = setTimeout(() => {
         setShowModal(false);
-        setRedirect(true); // Set redirect setelah modal ditutup
+        setRedirect(true);
       }, 3000);
 
-      // Cleanup function untuk menghindari memory leaks
       return () => clearTimeout(timer);
     }
   }, [token, user?.role, allowedRoles]);
 
   const handleCloseModal = () => {
-    setShowModal(false); // Fungsi untuk menutup modal
-    setRedirect(true); // Redirect setelah modal ditutup
+    setShowModal(false);
+    setRedirect(true);
   };
 
   if (redirect) {
@@ -42,11 +46,11 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   return (
     <>
       <Modal
-        message="You have to login to access this page." // Pesan yang akan ditampilkan di modal
+        message="You have to login to access this page."
         show={showModal}
         onClose={handleCloseModal}
       />
-      {token && children} {/* Hanya render children jika token ada */}
+      {token && children}
     </>
   );
 };

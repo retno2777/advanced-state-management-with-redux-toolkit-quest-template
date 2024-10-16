@@ -1,8 +1,36 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 import { CreateProductResponse, ProductState, ProductResponse, Product } from './types';
+/**
+ * Product feature slice
+ *
+ * This file contains the product feature slice. It defines the initial state,
+ * reducers, and async thunks for the product feature.
+ *
+ * The slice is used to manage the state of the products. It will store the list
+ * of products, the loading state, and the error state. It will also handle the
+ * actions that are dispatched by the async thunks.
+ *
+ * The async thunks are used to handle the communication with the API. They will
+ * handle the requests and responses for the create product, get limited products,
+ * get product by id, update product, and delete product actions.
+ *
+ * The reducers are used to update the state of the slice. They will handle the
+ * actions that are dispatched by the async thunks.
+ */
 
-// Async thunk untuk create product dengan FormData
+/**
+ * Async thunk for creating a new product
+ *
+ * This thunk is used to create a new product. It will handle the request
+ * and response for the create product action. The request body should
+ * contain the product data in the form of a FormData object.
+ *
+ * @param {FormData} formData - The product data in the form of a FormData object.
+ * @param {{rejectValue: string}} thunkAPI - The thunk API.
+ * @returns {Promise<CreateProductResponse>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const createProduct = createAsyncThunk<CreateProductResponse, FormData>(
   'products/create',
   async (formData, { rejectWithValue }) => {
@@ -19,7 +47,15 @@ export const createProduct = createAsyncThunk<CreateProductResponse, FormData>(
   }
 );
 
-// Async thunk untuk get all products
+/**
+ * Async thunk for getting all products
+ *
+ * This thunk is used to get all products. It will handle the request
+ * and response for the get all products action.
+ *
+ * @returns {Promise<ProductResponse>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const getProducts = createAsyncThunk<ProductResponse>(
   'products/getAll',
   async (_, { rejectWithValue }) => {
@@ -33,7 +69,15 @@ export const getProducts = createAsyncThunk<ProductResponse>(
   }
 );
 
-// Async thunk untuk get limited products
+/**
+ * Async thunk for getting limited products
+ *
+ * This thunk is used to get limited products. It will handle the request
+ * and response for the get limited products action.
+ *
+ * @returns {Promise<ProductResponse>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const getLimitedProducts = createAsyncThunk<ProductResponse>(
   'products/getLimited',
   async (_, { rejectWithValue }) => {
@@ -47,7 +91,16 @@ export const getLimitedProducts = createAsyncThunk<ProductResponse>(
   }
 );
 
-// Async thunk untuk mendapatkan produk berdasarkan id
+/**
+ * Async thunk for getting a product by its ID
+ *
+ * This thunk is used to get a product by its ID. It will handle the request
+ * and response for the get product by ID action.
+ *
+ * @param {number} productId - The ID of the product.
+ * @returns {Promise<Product>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const getProductById = createAsyncThunk<Product, number>(
   'products/getById',
   async (productId, { rejectWithValue }) => {
@@ -61,7 +114,18 @@ export const getProductById = createAsyncThunk<Product, number>(
   }
 );
 
-// Async thunk untuk memperbarui produk
+/**
+ * Async thunk for updating a product
+ *
+ * This thunk is used to update a product. It will handle the request
+ * and response for the update product action.
+ *
+ * @param {{id: number, formData: FormData}} data - The data for the update product. It should contain the
+ *                                                    product ID and the product data in the form of a FormData
+ *                                                    object.
+ * @returns {Promise<CreateProductResponse>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const updateProduct = createAsyncThunk<
   CreateProductResponse,
   { id: number, formData: FormData }
@@ -71,7 +135,7 @@ export const updateProduct = createAsyncThunk<
     try {
       const response = await api.put<CreateProductResponse>(
         `/seller/products/${id}`,
-        formData // Kirim FormData
+        formData
       );
       return response.data;
     } catch (error: any) {
@@ -81,11 +145,20 @@ export const updateProduct = createAsyncThunk<
   }
 );
 
-// Async thunk untuk menghapus produk berdasarkan ID
+/**
+ * Async thunk for deleting a product
+ *
+ * This thunk is used to delete a product. It will handle the request
+ * and response for the delete product action.
+ *
+ * @param {number} productId - The ID of the product to be deleted.
+ * @returns {Promise<{ message: string, ok: boolean }>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const deleteProduct = createAsyncThunk<
-  { message: string, ok: boolean }, // Return value dari thunk jika berhasil
-  number, // Parameter yang diterima oleh thunk (productId)
-  { rejectValue: string } // Optional reject value
+  { message: string, ok: boolean }, 
+  number, 
+  { rejectValue: string } 
 >(
   'products/deleteProduct',
   async (productId, { rejectWithValue }) => {
@@ -101,7 +174,15 @@ export const deleteProduct = createAsyncThunk<
   }
 );
 
-// Async thunk untuk mendapatkan produk berdasarkan shopper
+/**
+ * Async thunk for getting products by shopper
+ *
+ * This thunk is used to get products by shopper. It will handle the request
+ * and response for the get products by shopper action.
+ *
+ * @returns {Promise<ProductResponse>} The response from the API.
+ * @throws {string} An error message if the request fails.
+ */
 export const getProductsByShopper = createAsyncThunk<ProductResponse>(
   'products/getByShopper',
   async (_, { rejectWithValue }) => {
@@ -230,7 +311,7 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(getProductsByShopper.fulfilled, (state, action) => {
-        state.products = action.payload.products; // Simpan produk dari shopper
+        state.products = action.payload.products; 
         state.loading = false;
       })
       .addCase(getProductsByShopper.rejected, (state, action) => {
@@ -240,6 +321,6 @@ const productSlice = createSlice({
   },
 });
 
-// Export reducer dan actions
+// Export reducer and actions
 export const { resetProductState } = productSlice.actions;
 export default productSlice.reducer;

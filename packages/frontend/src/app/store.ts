@@ -6,7 +6,16 @@ import shopperReducer from '../features/shopper/shopperSlice';
 import cartSlice from '../features/cart/cartSlice';
 import ordersShopperSlice from '../features/order/shopper/ordersShopperSlice';
 import ordersSellerSlice from '../features/order/seller/ordersSellerSlice';
-import adminslice from '../features/admin/adminslice';
+import adminSlice from '../features/admin/adminSlice';
+
+/**
+ * Store Module
+ * =============
+ *
+ * This module defines the central store for the application, managing state and providing access to it.
+ *
+ * @module store
+ */
 
 export const store = configureStore({
   reducer: {
@@ -17,10 +26,8 @@ export const store = configureStore({
     cart: cartSlice,
     ordersShopper: ordersShopperSlice,
     ordersSeller: ordersSellerSlice,
-    adminslice: adminslice,
+    adminslice: adminSlice,
   },
-  // Uncomment this if you need to add custom middleware
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(yourCustomMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
