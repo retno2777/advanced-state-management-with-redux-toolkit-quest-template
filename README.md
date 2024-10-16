@@ -180,14 +180,13 @@ yarn install
 ```
 4. Environment Variables
 
-Change `.env` file in the ``packages\backend`` directory with the following variables:
+Create `.env` file in the ``packages\backend`` directory with the following variables:
 
 ```bash
 TOKEN=your_jwt_secret_key
-PORT=4040
 ```
 
-after that running this command
+after that running this command in ``packages\backend``
 ```bash
 cp .env.example .env
 ```
